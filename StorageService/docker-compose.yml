@@ -1,0 +1,8 @@
+version: '2'
+
+services:
+  evilcorp.slackstorage.storageservice.webhost:
+    image: evilcorp.slackstorage.storageservice.webhost
+    build:
+      context: ./EvilCorp.SlackStorage.StorageService.WebHost
+      dockerfile: Dockerfile
