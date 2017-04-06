@@ -7,7 +7,7 @@ namespace DataAccess
 {
     public interface IStorageRepository
     {
-        void add(Storage storage);
+        void create(DataStore dataStore);
         
     }
 }
