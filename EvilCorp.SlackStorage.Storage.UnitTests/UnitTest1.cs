@@ -9,6 +9,7 @@ namespace EvilCorp.SlackStorage.Storage.UnitTests
         [TestMethod]
         public void TestMethod1()
         {
+
         }
     }
 }

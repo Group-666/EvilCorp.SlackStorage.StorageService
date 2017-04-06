@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccess", "DataAccess\Da
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DomainTypes", "DomainTypes\DomainTypes.csproj", "{88630A8F-5675-4F6D-B9D5-0FBB7E32E0A1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EvilCorp.SlackStorage.Storage.UnitTests", "..\EvilCorp.SlackStorage.Storage.UnitTests\EvilCorp.SlackStorage.Storage.UnitTests.csproj", "{541EF5A1-FB37-4A92-951D-A8814D557855}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{88630A8F-5675-4F6D-B9D5-0FBB7E32E0A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{88630A8F-5675-4F6D-B9D5-0FBB7E32E0A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{88630A8F-5675-4F6D-B9D5-0FBB7E32E0A1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{541EF5A1-FB37-4A92-951D-A8814D557855}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{541EF5A1-FB37-4A92-951D-A8814D557855}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{541EF5A1-FB37-4A92-951D-A8814D557855}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{541EF5A1-FB37-4A92-951D-A8814D557855}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
