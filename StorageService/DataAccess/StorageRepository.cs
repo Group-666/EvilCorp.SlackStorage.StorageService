@@ -14,7 +14,19 @@ namespace DataAccess
         }
         public void create(DataStore dataStore)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var db = _client.GetDatabase("StorageService");
+                
+                //We're going to want to create a unique collection. Possibly with the accountId. 
+                db.CreateCollection(dataStore.DataStoreName);
+                
+                Console.WriteLine(db);
+            }
+            catch (Exception exception)
+            {
+                throw new InvalidProgramException("There was a problem creating the data store", exception);
+            }
         }
     }
 }
