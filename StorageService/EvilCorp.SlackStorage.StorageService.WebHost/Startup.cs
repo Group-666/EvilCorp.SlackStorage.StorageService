@@ -20,6 +20,8 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
             Configuration = builder.Build();
+
+            
         }
 
         public IConfigurationRoot Configuration { get; }
@@ -29,6 +31,7 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost
         {
             // Add framework services.
             services.AddMvc();
+            services.AddSingleton<IConfiguration>(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -12,16 +12,17 @@ namespace DataAccess
         {
             _client = client;
         }
-        public void create(DataStore dataStore)
+        public String create(DataStore dataStore)
         {
             try
             {
                 var db = _client.GetDatabase("StorageService");
+
+                var dataStoreId = dataStore.DataStoreName + "_" + dataStore.UserId;
+                db.CreateCollection(dataStoreId);
+
+                return dataStoreId;
                 
-                //We're going to want to create a unique collection. Possibly with the accountId. 
-                db.CreateCollection(dataStore.DataStoreName);
-                
-                Console.WriteLine(db);
             }
             catch (Exception exception)
             {

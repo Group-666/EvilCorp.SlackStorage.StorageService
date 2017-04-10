@@ -7,9 +7,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EvilCorp.SlackStorage.Stora
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{31072DBE-B86A-49C7-BE5C-EA79755F061C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EvilCorp.SlackStorage.StorageService.DataAccess", "DataAccess\EvilCorp.SlackStorage.StorageService.DataAccess.csproj", "{B727D6EE-DC5B-4A95-94B5-EFB8F1C60792}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccess", "DataAccess\DataAccess.csproj", "{B727D6EE-DC5B-4A95-94B5-EFB8F1C60792}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EvilCorp.SlackStorage.StorageService.DomainTypes", "DomainTypes\EvilCorp.SlackStorage.StorageService.DomainTypes.csproj", "{88630A8F-5675-4F6D-B9D5-0FBB7E32E0A1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DomainTypes", "DomainTypes\DomainTypes.csproj", "{88630A8F-5675-4F6D-B9D5-0FBB7E32E0A1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EvilCorp.SlackStorage.Storage.UnitTests", "..\EvilCorp.SlackStorage.Storage.UnitTests\EvilCorp.SlackStorage.Storage.UnitTests.csproj", "{541EF5A1-FB37-4A92-951D-A8814D557855}"
 EndProject

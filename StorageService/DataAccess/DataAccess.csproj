@@ -9,7 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DomainTypes\EvilCorp.SlackStorage.StorageService.DomainTypes.csproj" />
+    <ProjectReference Include="..\DomainTypes\DomainTypes.csproj" />
   </ItemGroup>
 
 </Project>

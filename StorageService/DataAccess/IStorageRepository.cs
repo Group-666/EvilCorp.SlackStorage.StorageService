@@ -7,7 +7,7 @@ namespace DataAccess
 {
     public interface IStorageRepository
     {
-        void create(DataStore dataStore);
+        String create(DataStore dataStore);
         
     }
 }
