@@ -11,6 +11,8 @@ namespace DataAccess
         public StorageRepository(IMongoClient client)
         {
             _client = client;
+
+            
         }
         public String create(DataStore dataStore)
         {

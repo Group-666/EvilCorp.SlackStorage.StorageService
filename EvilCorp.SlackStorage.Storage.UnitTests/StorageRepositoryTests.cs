@@ -13,7 +13,7 @@ namespace EvilCorp.SlackStorage.Storage.UnitTests
         public void StorageRepository_Can_Create_DataStore()
         {
             var dataStore = new DataStore("asljdkj2382", "Samuel L jackson", "sam238as");
-            var clientMock = new CreateMongoMock(dataStore); 
+            //var clientMock = new CreateMongoMock(dataStore); 
         }
 
         private IMongoClient CreateMongoMock(DataStore dataStore)
