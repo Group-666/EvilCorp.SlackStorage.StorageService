@@ -8,7 +8,6 @@ using DomainTypes;
 using DataAccess;
 using MongoDB.Driver;
 using Microsoft.Extensions.Configuration;
-using DomainTypes.Service;
 
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -20,9 +19,9 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
     public class StorageController : Controller
     {
         private readonly IConfiguration _config;
-        public StorageController(IConfiguration config)
+        public StorageController()
         {
-            _config = config;
+            //_config = config;
         }
         // GET: api/values
         [HttpGet]
@@ -33,7 +32,7 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
 
   
 
-        // POST api/values
+        // POST api/storage
         [HttpPost]
         public String Post([FromBody]JObject json)
         {
@@ -42,22 +41,26 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
                 var dataStore = DataStoreParser.Parse(json);
 
                 //I'm hoping this will get me the database connection string.
-                var connectionString = _config["DatabaseConnectionString"];
+                //something wrong with connection string.
+                //var connectionString = _config["DatabaseConnectionString"];
 
-                StorageRepository dataStoreRepo = new StorageRepository(new MongoClient(connectionString));
+
+                //10.0.0.10:32768
+                StorageRepository dataStoreRepo = new StorageRepository(new MongoClient("mongodb://127.0.0.1:32768/"));
 
                 
                 //Creates a datastore for the given user.
-                var dataStoreId = dataStoreRepo.create(dataStore);
+                var dataStoreId = dataStoreRepo.Create(dataStore);
 
                 return dataStoreId;
+               
             }
             catch (Exception ex)
             {
                 //Log Error
                 //Also what do I return? Want to return the db ID if it's been created,
                 //but what do I do if something goes wrong?
-                return "error";
+                return ex.Message;
             }
         }
 

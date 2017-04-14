@@ -6,3 +6,4 @@ services:
     build:
       context: ./EvilCorp.SlackStorage.StorageService.WebHost
       dockerfile: Dockerfile
+

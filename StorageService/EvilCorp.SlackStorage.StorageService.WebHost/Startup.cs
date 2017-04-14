@@ -30,8 +30,9 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost
         public void ConfigureServices(IServiceCollection services)
         {
             // Add framework services.
+            //services.AddSingleton<IConfiguration>(Configuration);
             services.AddMvc();
-            services.AddSingleton<IConfiguration>(Configuration);
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
