@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\StorageService\DataAccess\DataAccess.csproj" />
     <ProjectReference Include="..\StorageService\DomainTypes\DomainTypes.csproj" />
   </ItemGroup>
 

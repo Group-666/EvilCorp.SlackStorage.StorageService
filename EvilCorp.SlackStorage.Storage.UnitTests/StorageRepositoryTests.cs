@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MongoDB.Driver;
 using Moq;
 using DomainTypes;
+using DataAccess;
 
 namespace EvilCorp.SlackStorage.Storage.UnitTests
 {
@@ -12,8 +13,12 @@ namespace EvilCorp.SlackStorage.Storage.UnitTests
         [TestMethod,TestCategory("DataAccess")]
         public void StorageRepository_Can_Create_DataStore()
         {
-            var dataStore = new DataStore("asljdkj2382", "Samuel L jackson", "sam238as");
-            //var clientMock = new CreateMongoMock(dataStore); 
+            var dataStore = new DataStore("Samuel L jackson", "sam238as");
+            var clientMock = CreateMongoMock(dataStore);
+
+            StorageRepository storageRepository = new StorageRepository(clientMock);
+
+            storageRepository.Create(dataStore);
         }
 
         private IMongoClient CreateMongoMock(DataStore dataStore)
@@ -22,8 +27,9 @@ namespace EvilCorp.SlackStorage.Storage.UnitTests
             var dbMock = new Mock<IMongoDatabase>();
             var collectionMock = new Mock<IMongoCollection<DataStore>>();
 
-            //clientMock.Setup(c => c.GetDatabase(It.Is<string>(s => s == "StorageService"), null)).Returns(dbMock.Object);
-            //dbMock.Setup(d => d.GetCollection<DataStore>)
+            clientMock.Setup(c => c.GetDatabase(It.Is<string>(s => s == "StorageService"), null)).Returns(dbMock.Object);
+            dbMock.Setup(d => d.GetCollection<DataStore>(It.Is<string>(s => s == "Storage"), null)).Returns(collectionMock.Object);
+            
 
             return clientMock.Object;
         }

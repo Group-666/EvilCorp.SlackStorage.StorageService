@@ -1,17 +1,20 @@
 ﻿using System;
 using DomainTypes;
 using MongoDB.Driver;
+using DomainTypes.Contracts;
 
 namespace DataAccess
 {
     public class StorageRepository : IStorageRepository
     {
         private readonly IMongoClient _client;
+        private readonly ILogger _logger;
         private readonly String database = "StorageService";
 
-        public StorageRepository(IMongoClient client)
+        public StorageRepository(IMongoClient client, ILogger logger)
         {
             _client = client;
+            _logger = logger;
            
 
         }
@@ -25,7 +28,8 @@ namespace DataAccess
                 //For some reason GetCollection wasn't creating a collection if one didn't exist before,
                 //hence the create collection here. Will throw an exception if a database with that name already exists.
                 db.CreateCollection(dataStoreId);
-                
+
+                _logger.Log("Collection for user " + dataStore.UserId + " created called. " + dataStoreId, LogLevel.Information);
 
                 return dataStoreId;
 

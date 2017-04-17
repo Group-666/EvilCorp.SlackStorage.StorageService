@@ -8,6 +8,7 @@ using DomainTypes;
 using DataAccess;
 using MongoDB.Driver;
 using Microsoft.Extensions.Configuration;
+using DomainTypes.Contracts;
 
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -18,19 +19,19 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
     [Route("api/[controller]")]
     public class StorageController : Controller
     {
-        private readonly IConfiguration _config;
+        //private readonly ILogger _logger;
+        
         public StorageController()
         {
-            //_config = config;
+            //_logger = logger;  
         }
         // GET: api/values
         [HttpGet]
         public IEnumerable<string> Get()
         {
-            return new string[] { "value1", "value2" };
-        }
 
-  
+            return new string[] { "Storage One", "Storage Two" };
+        }
 
         // POST api/storage
         [HttpPost]
@@ -40,13 +41,8 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
             {
                 var dataStore = DataStoreParser.Parse(json);
 
-                //I'm hoping this will get me the database connection string.
-                //something wrong with connection string.
-                //var connectionString = _config["DatabaseConnectionString"];
-
-
-                //10.0.0.10:32768
-                StorageRepository dataStoreRepo = new StorageRepository(new MongoClient("mongodb://127.0.0.1:32768/"));
+                               
+                StorageRepository dataStoreRepo = new StorageRepository(new MongoClient("mongodb://127.0.0.1:32768/"),new ConsoleLogger(LogLevel.Critical));
 
                 
                 //Creates a datastore for the given user.
