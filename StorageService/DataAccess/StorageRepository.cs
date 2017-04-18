@@ -11,12 +11,10 @@ namespace DataAccess
         private readonly ILogger _logger;
         private readonly String database = "StorageService";
 
-        public StorageRepository(IMongoClient client, ILogger logger)
+        public StorageRepository(IMongoClient client)
         {
             _client = client;
-            _logger = logger;
-           
-
+            _logger = ConsoleLoggerFactory.CreateConsoleLogger();
         }
         public String Create(DataStore dataStore)
         {

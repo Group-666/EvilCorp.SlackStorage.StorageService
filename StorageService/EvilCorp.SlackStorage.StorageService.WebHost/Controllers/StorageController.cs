@@ -19,11 +19,11 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
     [Route("api/[controller]")]
     public class StorageController : Controller
     {
-        //private readonly ILogger _logger;
+        private readonly ILogger _logger;
         
         public StorageController()
         {
-            //_logger = logger;  
+            _logger = ConsoleLoggerFactory.CreateConsoleLogger();
         }
         // GET: api/values
         [HttpGet]
@@ -41,21 +41,18 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
             {
                 var dataStore = DataStoreParser.Parse(json);
 
-                               
-                StorageRepository dataStoreRepo = new StorageRepository(new MongoClient("mongodb://127.0.0.1:32768/"),new ConsoleLogger(LogLevel.Critical));
+                StorageRepository dataStoreRepo = new StorageRepository(new MongoClient("mongodb://127.0.0.1:32768/"));
 
-                
                 //Creates a datastore for the given user.
                 var dataStoreId = dataStoreRepo.Create(dataStore);
+                _logger.Log("datastore for user: " + dataStore.UserId + " created with an id of: " + dataStoreId, LogLevel.Information);
 
                 return dataStoreId;
-               
+
             }
             catch (Exception ex)
             {
-                //Log Error
-                //Also what do I return? Want to return the db ID if it's been created,
-                //but what do I do if something goes wrong?
+                _logger.Log("Error in trying to create a datastore. Message: " + ex.Message, LogLevel.Error);
                 return ex.Message;
             }
         }
