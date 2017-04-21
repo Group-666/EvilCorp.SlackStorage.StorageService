@@ -20,17 +20,19 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
     public class StorageController : Controller
     {
         private readonly ILogger _logger;
+        private readonly IStorageRepository _dataStoreRepo;
         
         public StorageController()
         {
             _logger = ConsoleLoggerFactory.CreateConsoleLogger();
+            _dataStoreRepo = new StorageRepository(new MongoClient("mongodb://127.0.0.1:32768/"));
         }
-        // GET: api/values
-        [HttpGet]
-        public IEnumerable<string> Get()
+        // GET: api/storage/<userId>
+        [HttpGet("{userId}")]
+        public List<DataStore> Get(String userId)
         {
-
-            return new string[] { "Storage One", "Storage Two" };
+            List<DataStore> dataStores = _dataStoreRepo.GetAll(userId);
+            return dataStores;
         }
 
         // POST api/storage
@@ -41,12 +43,12 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
             {
                 var dataStore = DataStoreParser.Parse(json);
 
-                StorageRepository dataStoreRepo = new StorageRepository(new MongoClient("mongodb://127.0.0.1:32768/"));
+                
 
                 //Creates a datastore for the given user.
-                var dataStoreId = dataStoreRepo.Create(dataStore);
+                var dataStoreId = _dataStoreRepo.Create(dataStore);
                 _logger.Log("datastore for user: " + dataStore.UserId + " created with an id of: " + dataStoreId, LogLevel.Information);
-
+                
                 return dataStoreId;
 
             }
@@ -56,6 +58,7 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
                 return ex.Message;
             }
         }
+
 
  
     }

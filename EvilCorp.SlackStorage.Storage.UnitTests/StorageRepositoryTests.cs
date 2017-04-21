@@ -28,7 +28,7 @@ namespace EvilCorp.SlackStorage.Storage.UnitTests
             var collectionMock = new Mock<IMongoCollection<DataStore>>();
 
             clientMock.Setup(c => c.GetDatabase(It.Is<string>(s => s == "StorageService"), null)).Returns(dbMock.Object);
-            dbMock.Setup(d => d.GetCollection<DataStore>(It.Is<string>(s => s == "Storage"), null)).Returns(collectionMock.Object);
+           // dbMock.Setup(d => d.GetCollection<DataStore>(It.Is<string>(s => s == "Storage"), null)).Returns(collectionMock.Object);
             
 
             return clientMock.Object;

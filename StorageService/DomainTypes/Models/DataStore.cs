@@ -35,5 +35,11 @@ namespace DomainTypes
             DataStoreName = dataStoreName;
             UserId = userId;
         }
+
+        override
+        public String ToString()
+        {
+            return "datastore to string";
+        }
     }
 }

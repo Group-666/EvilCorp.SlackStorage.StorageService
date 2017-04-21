@@ -8,6 +8,6 @@ namespace DataAccess
     public interface IStorageRepository
     {
         String Create(DataStore dataStore);
-        
+        List<DataStore> GetAll(string userId);
     }
 }
