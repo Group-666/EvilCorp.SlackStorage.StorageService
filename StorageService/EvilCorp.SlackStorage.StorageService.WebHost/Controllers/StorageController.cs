@@ -15,13 +15,13 @@ using DomainTypes.Contracts;
 
 namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
 {
-    
+
     [Route("api/[controller]")]
     public class StorageController : Controller
     {
         private readonly ILogger _logger;
         private readonly IStorageRepository _dataStoreRepo;
-        
+
         public StorageController()
         {
             _logger = ConsoleLoggerFactory.CreateConsoleLogger();
@@ -36,14 +36,13 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
         }
 
         // POST api/storage
-        [HttpPost]
-        public String Post([FromBody]JObject json)
+        [HttpPost("{userId}")]
+        public String Post([FromBody]JObject json, String userId)
         {
             try
             {
                 var dataStore = DataStoreParser.Parse(json);
-
-                
+                dataStore.UserId = userId;
 
                 //Creates a datastore for the given user.
                 var dataStoreId = _dataStoreRepo.Create(dataStore);
