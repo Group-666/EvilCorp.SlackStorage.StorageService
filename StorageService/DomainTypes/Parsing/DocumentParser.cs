@@ -6,5 +6,6 @@ namespace DomainTypes
 {
     class DocumentParser
     {
+
     }
 }

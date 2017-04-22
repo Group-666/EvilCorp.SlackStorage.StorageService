@@ -25,7 +25,8 @@ namespace DataAccess
         public List<DataStore> GetAll(string userId)
         {
             List<DataStore> dataStores = new List<DataStore>();
-            //Perhaps start off with a list of datastores for the user.
+            
+
             var collection = _db.GetCollection<Account>("collectionMetaData");
 
             var list = collection.Find(m => m.AccountId == userId).ToList();
@@ -43,25 +44,41 @@ namespace DataAccess
         {
             try
             {
-                //DataStore dataStore = new DataStore("samualTarly", "23481");
-                //DataStore dataStore2 = new DataStore("samualNotTarly", "23481");
+                //DataStore dataStore = new DataStore("samualTarly", "23481");               
                 //dataStores.Add(dataStore);
-                //dataStores.Add(dataStore2);
-
                 // Account account = new Account("23481", dataStores);
                 // collection.InsertOne(account);
 
+                Account account = new Account(dataStore.UserId);
+                var collection = _db.GetCollection<Account>("collectionMetaData");
+                var doesUserExist = collection.Find(a => a.AccountId == dataStore.UserId).ToList();
 
-                var dataStoreId = dataStore.UserId + "_" + dataStore.DataStoreName;
-                //For some reason GetCollection wasn't creating a collection if one didn't exist before,
-                //hence the create collection here. Will throw an exception if a database with that name already exists.
-                _db.CreateCollection(dataStoreId);
-                
-                //Create info about when a database was created. 
-                CreateCollectionWithMetaData(dataStoreId);
-                _logger.Log("Collection for user " + dataStore.UserId + " created called. " + dataStoreId, LogLevel.Information);
+                //Clearly no user exists with that name
+                if (doesUserExist.Count == 0)
+                {
+                    var dataStoreId = dataStore.UserId + "_" + dataStore.DataStoreName;
+                    dataStore.DataStoreId = dataStoreId;
+                    //For some reason GetCollection wasn't creating a collection if one didn't exist before,
+                    //hence the create collection here. Will throw an exception if a database with that name already exists.
+                    _db.CreateCollection(dataStoreId);
+                    
 
-                return dataStoreId;
+                    //Create info about when a database was created. 
+                    CreateCollectionWithMetaData(dataStore,collection);
+                    _logger.Log("Collection for user " + dataStore.UserId + " created called. " + dataStoreId, LogLevel.Information);
+
+                    return dataStoreId;
+                }
+                //I think we may have a user with that name. 
+                else if (doesUserExist.Count > 0)
+                {            
+                    return "0";
+                }
+
+                return "0";
+              
+
+             
 
             }
             catch (Exception exception)
@@ -69,16 +86,20 @@ namespace DataAccess
                 throw new InvalidProgramException("There was a problem creating the data store", exception);
             }
         }
-        private void CreateCollectionWithMetaData(string collectionId)
+        private void CreateCollectionWithMetaData(DataStore dataStore, IMongoCollection<Account> collection)
         {
 
-            //TODO Handle errors.
+            
+            Account account = new Account(dataStore.UserId);
+            List<DataStore> dataStores = new List<DataStore>
+            {
+                dataStore
+            };
+            account.DataStores = dataStores;
 
-            var collection = _db.GetCollection<MetaData>("collectionMetaData");
+            //var collection = _db.GetCollection<Account>("collectionMetaData");
         
-            var currentTime = DateTime.Now;
-            var metaData = new MetaData(collectionId,currentTime);
-            collection.InsertOne(metaData);
+            collection.InsertOne(account);
             
         
         }
