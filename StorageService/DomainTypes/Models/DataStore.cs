@@ -8,6 +8,7 @@ namespace DomainTypes
         public String DataStoreId{ get; set; }
         public String DataStoreName { get; set; }
         public String UserId{ get; set; }
+        public DateTime CreatedAt { get; set; }
 
         public DataStore(String dataStoreId,String dataStoreName, String userId)
         {
@@ -34,6 +35,7 @@ namespace DomainTypes
 
             DataStoreName = dataStoreName;
             UserId = userId;
+            CreatedAt = DateTime.Now;
         }
 
         override

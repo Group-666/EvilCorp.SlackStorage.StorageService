@@ -8,7 +8,9 @@ namespace DomainTypes.Models
     {
         public String DataStoreId { get; set; }
         public DateTime CreatedAt { get; set; }
-   
+        public int Size { get; set; }
+        public int NumDocuments { get; set; }
+
 
         public MetaData(String dataStoreId, DateTime createdAt)
         {

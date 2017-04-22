@@ -25,9 +25,16 @@ namespace DataAccess
         public List<DataStore> GetAll(string userId)
         {
             List<DataStore> dataStores = new List<DataStore>();
-           
-            
+            //Perhaps start off with a list of datastores for the user.
+            var collection = _db.GetCollection<Account>("collectionMetaData");
 
+            var list = collection.Find(m => m.AccountId == userId).ToList();
+
+            //There should only be one account in the list anyway
+            var account = list[0];
+            dataStores = account.DataStores;
+
+            //TODO still need to add size and number of documents.
 
             return dataStores;
 
@@ -36,7 +43,14 @@ namespace DataAccess
         {
             try
             {
-                
+                //DataStore dataStore = new DataStore("samualTarly", "23481");
+                //DataStore dataStore2 = new DataStore("samualNotTarly", "23481");
+                //dataStores.Add(dataStore);
+                //dataStores.Add(dataStore2);
+
+                // Account account = new Account("23481", dataStores);
+                // collection.InsertOne(account);
+
 
                 var dataStoreId = dataStore.UserId + "_" + dataStore.DataStoreName;
                 //For some reason GetCollection wasn't creating a collection if one didn't exist before,
