@@ -10,5 +10,6 @@ namespace DataAccess
         String Create(DataStore dataStore);
         List<DataStore> GetAll(string userId);
         DataStore GetOne(string userId, string dataStoreId);
+        String Insert(Document document, String dataStoreId);
     }
 }

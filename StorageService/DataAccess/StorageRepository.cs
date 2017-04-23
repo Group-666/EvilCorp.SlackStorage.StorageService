@@ -4,6 +4,7 @@ using MongoDB.Driver;
 using DomainTypes.Contracts;
 using System.Collections.Generic;
 using DomainTypes.Models;
+using MongoDB.Bson;
 
 namespace DataAccess
 {
@@ -24,31 +25,16 @@ namespace DataAccess
 
         public List<DataStore> GetAll(string userId)
         {
-            /** Replace with GetDataStoresForAccount **/
-            List<DataStore> dataStores = new List<DataStore>();
-            var collection = _db.GetCollection<Account>("collectionMetaData");
-            var list = collection.Find(m => m.AccountId == userId).ToList();
-            //There should only be one account in the list anyway
-            var account = list[0];
-            dataStores = account.DataStores;
-            /** Replace with GetDataStoresForAccount **/
-
-            //TODO still need to add size and number of documents.
+            var dataStores = GetDataStoresForAccount(userId);
 
             return dataStores;
 
         }
         public DataStore GetOne(string userId, string dataStoreId)
         {
-            //Ideally we would just get the datastore from the db directly
-            //rather than having to loop through it here. This is easier though.
-            List<DataStore> dataStores = new List<DataStore>();
-            var collection = _db.GetCollection<Account>("collectionMetaData");
-            var list = collection.Find(m => m.AccountId == userId).ToList();
-            //There should only be one account in the list anyway
-            var account = list[0];
-            dataStores = account.DataStores;
-
+            var dataStores = GetDataStoresForAccount(userId);
+            
+            //Ideally don't loop through datastores but just get it from db directly.
             foreach (DataStore ds in dataStores)
             {
                 if (ds.DataStoreId.Equals(dataStoreId))
@@ -102,6 +88,44 @@ namespace DataAccess
             }
         }
 
+        public string Insert(Document document, string dataStoreId)
+        {
+            /**Document it tries to insert is a little funky. includes _t and _v fields.What that?
+            Seems to deal with the object keys just fine, doesn't seem to insert the values.
+
+            Sample JSON 
+            {
+               "document" : { "name": "one thing","age": 22}
+            }
+            Database            
+             {
+                "_id" : ObjectId("58fd0b1d07cc81331e2a1dc1"),
+                    "Doc" : {
+                            "_t" : "Newtonsoft.Json.Linq.JObject, Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed",
+                             "_v" : {
+                                "name" : {
+                                            "_t" : "JValue",
+                                            "_v" : []
+                                        },
+                                "age" : {
+                                            "_t" : "JValue",
+                                            "_v" : []
+                                        }
+                                }
+                    }
+             }
+            **/
+            
+            var collection = _db.GetCollection<Document>(dataStoreId);
+            collection.InsertOne(document);
+
+            //DocumentID seems to be null for some reason. Presumably because it's supposed to be _id?
+            _logger.Log("documentId = "+document.Id, LogLevel.Trace);
+
+            return document.Id.ToString();
+        }
+
+        //********** Private Methods ************//
         private List<DataStore> GetDataStoresForAccount(string userId)
         {
             List<DataStore> dataStores = new List<DataStore>();
@@ -134,7 +158,7 @@ namespace DataAccess
 
         }
 
-      
+       
     }
 }
        

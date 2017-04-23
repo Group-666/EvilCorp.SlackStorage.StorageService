@@ -77,6 +77,13 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
                 return ex.Message;
             }
         }
+        [HttpPost("{userId}/{dataStoreId}")]
+        public String Post([FromBody]JObject json, String userId, String dataStoreId)
+        {
+            var Document = DocumentParser.Parse(json);
+            var docId = _dataStoreRepo.Insert(Document, dataStoreId);
+            return docId;
+        }
      
 
 
