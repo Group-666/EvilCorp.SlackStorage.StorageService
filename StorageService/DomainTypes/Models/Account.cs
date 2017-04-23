@@ -6,7 +6,8 @@ namespace DomainTypes
 {
     public class Account
     {
-        //public Object Id { get; set; }
+        
+        public Object Id { get; set; }
         public String AccountId { get; set; }
         public List<DataStore> DataStores { get; set; }
 
