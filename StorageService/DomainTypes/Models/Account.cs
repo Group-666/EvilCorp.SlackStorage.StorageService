@@ -1,12 +1,18 @@
-﻿using System;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson.Serialization.IdGenerators;
+using System;
 using System.Collections.Generic;
 using System.Text;
+
 
 namespace DomainTypes
 {
     public class Account
     {
-        
+       // [BsonId(IdGenerator = typeof(StringObjectIdGenerator))]
+        //[BsonRepresentation(BsonType.ObjectId)]
+        [BsonIgnoreIfDefault]
         public Object Id { get; set; }
         public String AccountId { get; set; }
         public List<DataStore> DataStores { get; set; }

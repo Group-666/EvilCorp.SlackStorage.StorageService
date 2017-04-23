@@ -74,7 +74,7 @@ namespace DataAccess
                     var filter = Builders<Account>.Filter.Eq(a => a.AccountId, dataStore.UserId);
                     //Should add datastore to the dataStores array. Let's ducking hope so. 
                     var update = Builders<Account>.Update.Push("DataStores", dataStore);
-                    //var whatever = collection.Find(filter);
+                   
 
                     collection.FindOneAndUpdate(filter, update);
 
