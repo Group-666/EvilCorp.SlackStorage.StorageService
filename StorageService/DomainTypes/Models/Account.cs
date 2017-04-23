@@ -10,8 +10,6 @@ namespace DomainTypes
 {
     public class Account
     {
-       // [BsonId(IdGenerator = typeof(StringObjectIdGenerator))]
-        //[BsonRepresentation(BsonType.ObjectId)]
         [BsonIgnoreIfDefault]
         public Object Id { get; set; }
         public String AccountId { get; set; }

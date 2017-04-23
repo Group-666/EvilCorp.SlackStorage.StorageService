@@ -25,6 +25,8 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
         public StorageController()
         {
             _logger = ConsoleLoggerFactory.CreateConsoleLogger();
+
+            //Want to prevent hardcoding of the mongoClient IP. 
             _dataStoreRepo = new StorageRepository(new MongoClient("mongodb://127.0.0.1:32768/"));
         }
         // GET: api/storage/<userId>
@@ -33,6 +35,24 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
         {
             List<DataStore> dataStores = _dataStoreRepo.GetAll(userId);
             return dataStores;
+        }
+        [HttpGet("{userId}/{dataStoreId}")]
+        public DataStore Get(String userId, String dataStoreId)
+        {
+            DataStore dataStore;
+            try
+            {
+                dataStore = _dataStoreRepo.GetOne(userId, dataStoreId);
+            }
+            catch (KeyNotFoundException kyfe)
+            {
+                //What should I return? An Empty DataStore? Ideally a string but I can't do that.
+                _logger.Log("A datastore with that id was not found for that user", LogLevel.Error);
+                return null;
+            }
+            
+
+            return dataStore;
         }
 
         // POST api/storage
@@ -44,7 +64,7 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
                 var dataStore = DataStoreParser.Parse(json);
                 dataStore.UserId = userId;
 
-                //Creates a datastore for the given user.
+                //Creates a datastore for the user specified.
                 var dataStoreId = _dataStoreRepo.Create(dataStore);
                 _logger.Log("datastore for user: " + dataStore.UserId + " created with an id of: " + dataStoreId, LogLevel.Information);
                 
@@ -57,6 +77,7 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
                 return ex.Message;
             }
         }
+     
 
 
  
