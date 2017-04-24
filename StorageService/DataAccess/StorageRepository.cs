@@ -18,7 +18,7 @@ namespace DataAccess
         public StorageRepository(IMongoClient client)
         {
             _client = client;
-            _logger = ConsoleLoggerFactory.CreateConsoleLogger();
+            _logger = ConsoleFactory.CreateConsoleLogger();
 
             _db = _client.GetDatabase(database);
         }

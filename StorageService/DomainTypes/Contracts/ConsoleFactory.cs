@@ -4,7 +4,7 @@ using System.Text;
 
 namespace DomainTypes.Contracts
 {
-    public class ConsoleLoggerFactory
+    public class ConsoleFactory
     {
         public static ConsoleLogger CreateConsoleLogger()
         {
@@ -12,6 +12,13 @@ namespace DomainTypes.Contracts
             ConsoleLogger consoleLogger = new ConsoleLogger(LogLevel.Trace);
 
             return consoleLogger;
+        }
+        public static HttpServiceLogger CreateLogger()
+        {
+            //Get connection strings from a configuration file. 
+            HttpServiceLogger logger = new HttpServiceLogger("localhost:49752", "StorageService", LogLevel.Trace);
+
+            return logger;
         }
     }
 }
