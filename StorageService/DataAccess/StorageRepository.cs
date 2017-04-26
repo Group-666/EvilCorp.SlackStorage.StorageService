@@ -91,40 +91,15 @@ namespace DataAccess
 
         public string Insert(BsonDocument document, string dataStoreId)
         {
-            /**Document it tries to insert is a little funky. includes _t and _v fields.What that?
-            Seems to deal with the object keys just fine, doesn't seem to insert the values.
-            Maybe try making the document json instead of an object... 
 
-            Sample JSON 
-            {
-               "document" : { "name": "one thing","age": 22}
-            }
-            Database            
-             {
-                "_id" : ObjectId("58fd0b1d07cc81331e2a1dc1"),
-                    "Doc" : {
-                            "_t" : "Newtonsoft.Json.Linq.JObject, Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed",
-                             "_v" : {
-                                "name" : {
-                                            "_t" : "JValue",
-                                            "_v" : []
-                                        },
-                                "age" : {
-                                            "_t" : "JValue",
-                                            "_v" : []
-                                        }
-                                }
-                    }
-             }
-            **/
-            
             var collection = _db.GetCollection<BsonDocument>(dataStoreId);
             collection.InsertOne(document);
+            var documentId = document["_id"].ToString();
 
-            //DocumentID seems to be null for some reason. Presumably because it's supposed to be _id?
-            //_logger.Log("documentId = "+document.Id, LogLevel.Trace);
+            _logger.Log("Inserted document into " + dataStoreId, LogLevel.Information);
+            _logger.Log("ID of inserted document " + documentId, LogLevel.Information);
 
-            return "0";
+            return documentId;
            
         }
 

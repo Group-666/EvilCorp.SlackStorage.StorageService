@@ -82,15 +82,19 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
         [HttpPost("{userId}/{dataStoreId}")]
         public String Post([FromBody]JObject json, String userId, String dataStoreId)
         {
-            //Don't really need to parse this do I...
-            //var bson = json.ToBson();
-
-            //_logger.Log(bsonDoc.ToString(), LogLevel.Information);
-            //var document = new Document(bsonDoc);
-            var doc = BsonDocument.Parse(json.ToString());
-            _logger.Log(doc + "", LogLevel.Information);
-            var docId = _dataStoreRepo.Insert(doc, dataStoreId);
-            return docId;
+            
+            try
+            {
+                var doc = BsonDocument.Parse(json.ToString());
+                var docId = _dataStoreRepo.Insert(doc, dataStoreId);
+                return docId;
+            }
+            catch (Exception except)
+            {
+                _logger.Log(except.Message, LogLevel.Error);
+                return except.Message;
+            }
+            
         }
      
 
