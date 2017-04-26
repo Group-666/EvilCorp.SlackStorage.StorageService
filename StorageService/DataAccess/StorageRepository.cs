@@ -5,6 +5,7 @@ using DomainTypes.Contracts;
 using System.Collections.Generic;
 using DomainTypes.Models;
 using MongoDB.Bson;
+using Newtonsoft.Json.Linq;
 
 namespace DataAccess
 {
@@ -88,10 +89,11 @@ namespace DataAccess
             }
         }
 
-        public string Insert(Document document, string dataStoreId)
+        public string Insert(BsonDocument document, string dataStoreId)
         {
             /**Document it tries to insert is a little funky. includes _t and _v fields.What that?
             Seems to deal with the object keys just fine, doesn't seem to insert the values.
+            Maybe try making the document json instead of an object... 
 
             Sample JSON 
             {
@@ -116,13 +118,14 @@ namespace DataAccess
              }
             **/
             
-            var collection = _db.GetCollection<Document>(dataStoreId);
+            var collection = _db.GetCollection<BsonDocument>(dataStoreId);
             collection.InsertOne(document);
 
             //DocumentID seems to be null for some reason. Presumably because it's supposed to be _id?
-            _logger.Log("documentId = "+document.Id, LogLevel.Trace);
+            //_logger.Log("documentId = "+document.Id, LogLevel.Trace);
 
-            return document.Id.ToString();
+            return "0";
+           
         }
 
         //********** Private Methods ************//
@@ -141,6 +144,7 @@ namespace DataAccess
         }
         private void AddToAccountDataStoresMetaData(DataStore dataStore, IMongoCollection<Account> collection)
         {
+
             var filter = Builders<Account>.Filter.Eq(a => a.AccountId, dataStore.UserId);
             var update = Builders<Account>.Update.Push("DataStores", dataStore);
             collection.FindOneAndUpdate(filter, update);

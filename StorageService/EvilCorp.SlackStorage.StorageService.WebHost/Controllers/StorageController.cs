@@ -9,6 +9,8 @@ using DataAccess;
 using MongoDB.Driver;
 using Microsoft.Extensions.Configuration;
 using DomainTypes.Contracts;
+using MongoDB.Bson.Serialization;
+using MongoDB.Bson;
 
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -80,8 +82,14 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
         [HttpPost("{userId}/{dataStoreId}")]
         public String Post([FromBody]JObject json, String userId, String dataStoreId)
         {
-            var Document = DocumentParser.Parse(json);
-            var docId = _dataStoreRepo.Insert(Document, dataStoreId);
+            //Don't really need to parse this do I...
+            //var bson = json.ToBson();
+
+            //_logger.Log(bsonDoc.ToString(), LogLevel.Information);
+            //var document = new Document(bsonDoc);
+            var doc = BsonDocument.Parse(json.ToString());
+            _logger.Log(doc + "", LogLevel.Information);
+            var docId = _dataStoreRepo.Insert(doc, dataStoreId);
             return docId;
         }
      

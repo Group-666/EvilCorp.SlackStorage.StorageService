@@ -1,4 +1,6 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -10,9 +12,9 @@ namespace DomainTypes
     {
         [BsonIgnoreIfDefault]
         public Object Id { get; set; }
-        public Object Doc { get; set; }
+        public BsonDocument Doc { get; set; }
 
-        public Document(Object document)
+        public Document(BsonDocument document)
         {
             Doc = document;
         }

@@ -1,4 +1,6 @@
 ﻿using DomainTypes;
+using MongoDB.Bson;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -10,6 +12,6 @@ namespace DataAccess
         String Create(DataStore dataStore);
         List<DataStore> GetAll(string userId);
         DataStore GetOne(string userId, string dataStoreId);
-        String Insert(Document document, String dataStoreId);
+        String Insert(BsonDocument document, String dataStoreId);
     }
 }

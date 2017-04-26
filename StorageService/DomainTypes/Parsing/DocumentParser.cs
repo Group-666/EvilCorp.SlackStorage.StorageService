@@ -7,11 +7,11 @@ namespace DomainTypes
 {
     public class DocumentParser
     {
-        public static Document Parse(JObject json)
-        {
-            var document = (Object)json["document"] ?? throw new ArgumentException("The document is not found in json object.");
+        //public static Document Parse(JObject json)
+        //{
+            //var document = (JObject)json["document"] ?? throw new ArgumentException("The document is not found in json object.");
 
-            return new Document(document);
-        }
+        //    return new Document(document);
+        //}
     }
 }
