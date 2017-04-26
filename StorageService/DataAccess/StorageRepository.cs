@@ -3,9 +3,7 @@ using DomainTypes;
 using MongoDB.Driver;
 using DomainTypes.Contracts;
 using System.Collections.Generic;
-using DomainTypes.Models;
 using MongoDB.Bson;
-using Newtonsoft.Json.Linq;
 
 namespace DataAccess
 {

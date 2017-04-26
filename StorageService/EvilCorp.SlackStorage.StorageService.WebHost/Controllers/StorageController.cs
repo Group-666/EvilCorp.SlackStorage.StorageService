@@ -1,15 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using DomainTypes;
 using DataAccess;
 using MongoDB.Driver;
-using Microsoft.Extensions.Configuration;
 using DomainTypes.Contracts;
-using MongoDB.Bson.Serialization;
 using MongoDB.Bson;
 
 
