@@ -13,5 +13,8 @@ namespace DataAccess
         List<DataStore> GetAll(string userId);
         DataStore GetOne(string userId, string dataStoreId);
         String Insert(BsonDocument document, String dataStoreId);
+
+        string DeleteOneDataStore(string userId, string dataStoreId);
+        string DeleteAllDataStores(string userId);
     }
 }

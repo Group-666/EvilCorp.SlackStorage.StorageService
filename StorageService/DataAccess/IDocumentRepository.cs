@@ -5,11 +5,13 @@ using System.Text;
 
 namespace DataAccess
 {
-    interface IDocumentRepository
+    public interface IDocumentRepository
     {
-        String Insert(BsonDocument document, String dataStoreId);
-        String GetOne(String documentId);
-        String DeleteOne(String userId, String dataStoreId, String documentId);
-        String DeleteData(String userId);
+        string Insert(BsonDocument document, string dataStoreId);
+        string GetOne(string userId,string documentId);
+
+        string DeleteDocument(string userId, string dataStoreId, string documentId);
+
+        string DeleteData(string userId, string dataStoreId);
     }
 }

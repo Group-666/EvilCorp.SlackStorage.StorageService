@@ -25,16 +25,18 @@ namespace DomainTypes
             UserId = userId;
         }
 
+        public DataStore(){ }
+
         public DataStore(string dataStoreName)
         {
 
             if (string.IsNullOrEmpty(dataStoreName))
                 throw new ArgumentException("The dataStoreName cannot be null or empty.", nameof(dataStoreName));
-         
-
+        
             DataStoreName = dataStoreName;
             CreatedAt = DateTime.Now;
         }
+       
 
         override
         public String ToString()

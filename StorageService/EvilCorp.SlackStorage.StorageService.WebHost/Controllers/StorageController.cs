@@ -35,7 +35,7 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
             return dataStores;
         }
         [HttpGet("{userId}/{dataStoreId}")]
-        public DataStore Get(String userId, String dataStoreId)
+        public DataStore Get(string userId, string dataStoreId)
         {
             DataStore dataStore;
             try
@@ -55,7 +55,7 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
 
         // POST api/storage
         [HttpPost("{userId}")]
-        public String Post([FromBody]JObject json, String userId)
+        public string Post([FromBody]JObject json, string userId)
         {
             try
             {
@@ -75,23 +75,13 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
                 return ex.Message;
             }
         }
-        [HttpPost("{userId}/{dataStoreId}")]
-        public String Post([FromBody]JObject json, String userId, String dataStoreId)
+        [HttpDelete("{userId}/{dataStoreId}")]
+        public string DeleteOneDataStore(string userId, string dataStoreId)
         {
-            
-            try
-            {
-                var doc = BsonDocument.Parse(json.ToString());
-                var docId = _dataStoreRepo.Insert(doc, dataStoreId);
-                return docId;
-            }
-            catch (Exception except)
-            {
-                _logger.Log(except.Message, LogLevel.Error);
-                return except.Message;
-            }
-            
+            var message = _dataStoreRepo.DeleteOneDataStore(userId, dataStoreId);
+            return message;
         }
+        
      
 
 

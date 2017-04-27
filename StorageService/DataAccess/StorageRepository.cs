@@ -11,7 +11,7 @@ namespace DataAccess
     {
         private readonly IMongoClient _client;
         private readonly ILogger _logger;
-        private readonly String database = "StorageService";
+        private readonly string database = "StorageService";
         private readonly IMongoDatabase _db;
 
         public StorageRepository(IMongoClient client)
@@ -45,7 +45,7 @@ namespace DataAccess
             throw new KeyNotFoundException();
         }
 
-        public String Create(DataStore dataStore)
+        public string Create(DataStore dataStore)
         {
             try
             {
@@ -90,6 +90,7 @@ namespace DataAccess
         public string Insert(BsonDocument document, string dataStoreId)
         {
 
+            //This sounds like it should go in the document repository...
             var collection = _db.GetCollection<BsonDocument>(dataStoreId);
             collection.InsertOne(document);
             var documentId = document["_id"].ToString();
@@ -99,6 +100,33 @@ namespace DataAccess
 
             return documentId;
            
+        }
+        public string DeleteOneDataStore(string userId, string dataStoreId)
+        {
+            
+           _db.DropCollection(dataStoreId);
+           var message = "Store with Id: " + dataStoreId + " has been removed";
+           _logger.Log(message, LogLevel.Information);
+
+            /**** Updating MetaData ****/
+            //Filter is to find the user within the meta data collection.
+            //Update finds a specific datastore within the datastore array.
+
+            var collection = _db.GetCollection<Account>("collectionMetaData");
+            var filter = Builders<Account>.Filter.Eq(a => a.AccountId, userId);
+
+            //We want a PullFilter rather than just a pull to pull (remove) a single element in an array.
+            var update = Builders<Account>.Update.PullFilter("DataStores",
+                Builders<DataStore>.Filter.Eq("DataStoreId", dataStoreId));
+
+            collection.FindOneAndUpdate(filter, update);
+            //Only return this message if it's been done succesfully.
+            return message;
+        }
+
+        public string DeleteAllDataStores(string userId)
+        {
+            throw new NotImplementedException();
         }
 
         //********** Private Methods ************//
@@ -120,6 +148,7 @@ namespace DataAccess
 
             var filter = Builders<Account>.Filter.Eq(a => a.AccountId, dataStore.UserId);
             var update = Builders<Account>.Update.Push("DataStores", dataStore);
+            //var delete = Builders<Account>.Update.
             collection.FindOneAndUpdate(filter, update);
         }
 
@@ -135,7 +164,7 @@ namespace DataAccess
 
         }
 
-       
+    
     }
 }
        

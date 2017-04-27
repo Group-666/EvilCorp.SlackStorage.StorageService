@@ -21,21 +21,22 @@ namespace DataAccess
 
             _db = _client.GetDatabase(database);
         }
-        public string DeleteData(string userId)
-        {
-            throw new NotImplementedException();
-        }
 
-        public string DeleteOne(string userId, string dataStoreId, string documentId)
+        public string GetOne(string dataStoreId, string documentId)
         {
-            throw new NotImplementedException();
-        }
+            //We want to get a document from a dataStore with a particular id.
 
-        public string GetOne(string documentId)
-        {
-            throw new NotImplementedException();
+            var collection = _db.GetCollection<BsonDocument>(dataStoreId);
+            
+            //Id is of type ObjectID, not string, so we need to parse it to an objectID first.            
+            var filter = Builders<BsonDocument>.Filter.Eq("_id", ObjectId.Parse(documentId));          
+            var document = collection.Find(filter).FirstOrDefault();
+            _logger.Log("Trying to find a document with id: " + documentId, LogLevel.Trace);
+                        
+            var documentString = document.ToString();
+            return document.ToString();
+            
         }
-
 
         public string Insert(BsonDocument document, string dataStoreId)
         {
@@ -47,6 +48,20 @@ namespace DataAccess
             _logger.Log("ID of inserted document " + documentId, LogLevel.Information);
 
             return documentId;
+        }
+     
+
+       
+
+
+        public string DeleteDocument(string userId, string dataStoreId, string documentId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string DeleteData(string userId, string dataStoreId)
+        {
+            throw new NotImplementedException();
         }
     }
 }
