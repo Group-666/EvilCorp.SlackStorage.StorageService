@@ -4,6 +4,7 @@ using System.Text;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using DomainTypes.Contracts;
+using DomainTypes;
 
 namespace DataAccess
 {
@@ -49,14 +50,13 @@ namespace DataAccess
 
             return documentId;
         }
-     
-
-       
-
-
         public string DeleteDocument(string userId, string dataStoreId, string documentId)
         {
-            throw new NotImplementedException();
+            var collection = _db.GetCollection<BsonDocument>(dataStoreId);
+            var filter = Builders<BsonDocument>.Filter.Eq("_id", ObjectId.Parse(documentId));
+            collection.DeleteOne(filter);
+
+            return "DeleteDocument";
         }
 
         public string DeleteData(string userId, string dataStoreId)

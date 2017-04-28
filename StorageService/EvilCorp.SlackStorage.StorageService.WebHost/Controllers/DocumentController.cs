@@ -44,7 +44,7 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
         }
 
         [HttpPost("{userId}/{dataStoreId}")]
-        public String Post([FromBody]JObject json, String userId, String dataStoreId)
+        public String Post([FromBody]JObject json, string userId, string dataStoreId)
         {
             //Insert a document into a datastore.
             try
@@ -59,6 +59,20 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
                 return except.Message;
             }
 
+        }
+        [HttpDelete("{userId}/{dataStoreId}/data/{documentId}")]
+        public String DeleteOne(string userId, string dataStoreId, string documentId)
+        {
+            try
+            {
+                _documentRepo.DeleteDocument(userId, dataStoreId, documentId);
+                return "good bye document";
+            }
+            catch (Exception except)
+            {
+                _logger.Log(except.Message, LogLevel.Critical);
+                return except.Message;
+            }
         }
     }
 }
