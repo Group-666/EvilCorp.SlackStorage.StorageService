@@ -38,14 +38,17 @@ namespace DataAccess
             return document.ToString();
             
         }
-        public List<BsonDocument> GetAll(string dataStoreId)
+        public string GetAll(string dataStoreId)
         {
-            //This doesn't seem to actually get the stuff I want. Just some meta data.
+            //Something is mucking up when converting to a list. 
             var collection = _db.GetCollection<BsonDocument>(dataStoreId);
+
+            //Empty filter matches everything, so everything will be returned.
             var filter = Builders<BsonDocument>.Filter.Empty;
             var documents = collection.Find(filter).ToList();
-
-            return documents;
+            var jsonDocs = documents.ToJson();
+           
+            return jsonDocs;
         }
 
         public string Insert(BsonDocument document, string dataStoreId)

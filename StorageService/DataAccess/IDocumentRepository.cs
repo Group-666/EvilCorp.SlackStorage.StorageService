@@ -9,7 +9,7 @@ namespace DataAccess
     {
         string Insert(BsonDocument document, string dataStoreId);
         string GetOne(string userId,string documentId);
-        List<BsonDocument> GetAll(string dataStoreId);
+        string GetAll(string dataStoreId);
         string DeleteDocument(string userId, string dataStoreId, string documentId);
 
         string DeleteData(string userId, string dataStoreId);

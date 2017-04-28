@@ -43,10 +43,14 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
           
         }
         [HttpGet("{userId}/{dataStoreId}/data")]
-        public List<BsonDocument> GetAll(string userId, string dataStoreId)
+        public string GetAll(string userId, string dataStoreId)
         {
+
+            //Json prettifier in the broswer isn't making the json very pretty.
+            //Perhaps because the broswer interprets the data as strings rather than json.
             var documents = _documentRepo.GetAll(dataStoreId);
             return documents;
+
         }
 
         [HttpPost("{userId}/{dataStoreId}")]
