@@ -13,6 +13,7 @@ namespace DataAccess
         private readonly ILogger _logger;
         private readonly string database = "StorageService";
         private readonly IMongoDatabase _db;
+        private readonly string _metaDataCollection = "collectionMetaData";
 
         public StorageRepository(IMongoClient client)
         {
@@ -51,7 +52,9 @@ namespace DataAccess
             {
                 //** MetaData preparation **//
                 Account account = new Account(dataStore.UserId);
-                var collection = _db.GetCollection<Account>("collectionMetaData");
+                var collection = _db.GetCollection<Account>(_metaDataCollection);
+
+                //TODO Instead of looking to see if the user has an account, should check if there are any datastores in the list.
                 var doesUserExist = collection.Find(a => a.AccountId == dataStore.UserId).ToList();
                 var dataStoreId = dataStore.UserId + "_" + dataStore.DataStoreName;
                 dataStore.DataStoreId = dataStoreId;
@@ -112,7 +115,7 @@ namespace DataAccess
             //Filter is to find the user within the meta data collection.
             //Update finds a specific datastore within the datastore array.
 
-            var collection = _db.GetCollection<Account>("collectionMetaData");
+            var collection = _db.GetCollection<Account>(_metaDataCollection);
             var filter = Builders<Account>.Filter.Eq(a => a.AccountId, userId);
 
             //We want a PullFilter rather than just a pull to pull (remove) a single element in an array.
@@ -126,7 +129,19 @@ namespace DataAccess
 
         public string DeleteAllDataStores(string userId)
         {
-            throw new NotImplementedException();
+            //First find all datastores for a user.
+            var dataStores = GetDataStoresForAccount(userId);
+
+            //Remove each collection. Has problems if datastoreId is null. 
+            foreach(DataStore datastore in dataStores)
+                _db.DropCollection(datastore.DataStoreId);
+
+            //Just remove the entire user document instead of just the datastores list. 
+            var collection = _db.GetCollection<Account>(_metaDataCollection);
+            collection.DeleteOne(a => a.AccountId == userId);
+
+            //Should we come up with a better message? Or infact even just not return anything? Naaaah.
+            return "gooodbye datastores";
         }
 
         //********** Private Methods ************//
@@ -148,7 +163,7 @@ namespace DataAccess
 
             var filter = Builders<Account>.Filter.Eq(a => a.AccountId, dataStore.UserId);
             var update = Builders<Account>.Update.Push("DataStores", dataStore);
-            //var delete = Builders<Account>.Update.
+            
             collection.FindOneAndUpdate(filter, update);
         }
 

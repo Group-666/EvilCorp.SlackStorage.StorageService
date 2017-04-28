@@ -78,8 +78,32 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
         [HttpDelete("{userId}/{dataStoreId}")]
         public string DeleteOneDataStore(string userId, string dataStoreId)
         {
-            var message = _dataStoreRepo.DeleteOneDataStore(userId, dataStoreId);
-            return message;
+            try
+            {
+                var message = _dataStoreRepo.DeleteOneDataStore(userId, dataStoreId);
+                return message;
+            }
+            catch (Exception except)
+            {
+                _logger.Log(except.Message, LogLevel.Critical);
+                return except.Message;
+            }
+            
+        }
+        [HttpDelete("{userId}")]
+        public string DeleteAllDataStores(string userId)
+        {
+            try
+            {
+                var message = _dataStoreRepo.DeleteAllDataStores(userId);
+                return message;
+            }
+            catch (Exception except)
+            {
+                _logger.Log(except.Message, LogLevel.Critical);
+                return except.Message;
+            }
+           
         }
         
      
