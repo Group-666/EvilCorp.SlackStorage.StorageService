@@ -42,6 +42,12 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
             }
           
         }
+        [HttpGet("{userId}/{dataStoreId}/data")]
+        public List<BsonDocument> GetAll(string userId, string dataStoreId)
+        {
+            var documents = _documentRepo.GetAll(dataStoreId);
+            return documents;
+        }
 
         [HttpPost("{userId}/{dataStoreId}")]
         public String Post([FromBody]JObject json, string userId, string dataStoreId)
@@ -61,7 +67,7 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
 
         }
         [HttpDelete("{userId}/{dataStoreId}/data/{documentId}")]
-        public String DeleteOne(string userId, string dataStoreId, string documentId)
+        public string DeleteOne(string userId, string dataStoreId, string documentId)
         {
             try
             {
@@ -73,6 +79,21 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
                 _logger.Log(except.Message, LogLevel.Critical);
                 return except.Message;
             }
+        }
+        [HttpDelete("{userId}/{dataStoreId}/data")]
+        public string DeleteAllData(string userId, string dataStoreId)
+        {
+            try
+            {
+                _documentRepo.DeleteData(userId, dataStoreId);
+                return "data exterminated from dataStore: " + dataStoreId;
+            }
+            catch(Exception except)
+            {
+                _logger.Log(except.Message, LogLevel.Critical);
+                return except.Message;
+            }
+            
         }
     }
 }

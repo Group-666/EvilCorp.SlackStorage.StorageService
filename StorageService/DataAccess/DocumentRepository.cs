@@ -38,6 +38,15 @@ namespace DataAccess
             return document.ToString();
             
         }
+        public List<BsonDocument> GetAll(string dataStoreId)
+        {
+            //This doesn't seem to actually get the stuff I want. Just some meta data.
+            var collection = _db.GetCollection<BsonDocument>(dataStoreId);
+            var filter = Builders<BsonDocument>.Filter.Empty;
+            var documents = collection.Find(filter).ToList();
+
+            return documents;
+        }
 
         public string Insert(BsonDocument document, string dataStoreId)
         {
@@ -61,7 +70,13 @@ namespace DataAccess
 
         public string DeleteData(string userId, string dataStoreId)
         {
-            throw new NotImplementedException();
+            var collection = _db.GetCollection<BsonDocument>(dataStoreId);
+            var filter = Builders<BsonDocument>.Filter.Empty;
+            collection.DeleteMany(filter);
+
+            return "all documents gone";
         }
+
+     
     }
 }
