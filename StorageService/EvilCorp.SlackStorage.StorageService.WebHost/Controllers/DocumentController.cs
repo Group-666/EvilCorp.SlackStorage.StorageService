@@ -105,5 +105,23 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
             }
             
         }
+        [HttpPut("{userId}/{dataStoreId}/data/{documentId}")]
+        public JsonResult updateDocument(string userId, string dataStoreId, string documentId, [FromBody]JObject json) {
+
+            //Find particular document.
+            //Replace said document with whatever is in the json.
+            try
+            {
+                var doc = BsonDocument.Parse(json.ToString());
+                _documentRepo.UpdateDocument(dataStoreId, documentId, doc);
+            }
+            catch (Exception except)
+            {
+                _logger.Log("DocumentController: Put - {userId}/{ dataStoreId}/ data /{ documentId}: " + except.Message, LogLevel.Critical);
+                return Json(except.Message);
+            }
+
+            return Json(documentId);
+        }
     }
 }

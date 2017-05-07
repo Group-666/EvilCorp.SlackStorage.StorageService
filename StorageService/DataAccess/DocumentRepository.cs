@@ -88,6 +88,14 @@ namespace DataAccess
             return "all documents gone";
         }
 
-     
+        public string UpdateDocument(string dataStoreId, string documentId, BsonDocument document)
+        {
+            var collection = _db.GetCollection<BsonDocument>(dataStoreId);
+            var filter = Builders<BsonDocument>.Filter.Eq("_id", ObjectId.Parse(documentId));
+            
+            collection.ReplaceOne(filter, document);
+            _logger.Log("DocumentRepository-UpdateDocument: Id of doc " + documentId, LogLevel.Information);
+            return ""+documentId;
+        }
     }
 }

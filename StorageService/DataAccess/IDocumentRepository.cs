@@ -13,5 +13,6 @@ namespace DataAccess
         string DeleteDocument(string userId, string dataStoreId, string documentId);
 
         string DeleteData(string userId, string dataStoreId);
+        string UpdateDocument(string dataStoreId, string documentId, BsonDocument document);
     }
 }
