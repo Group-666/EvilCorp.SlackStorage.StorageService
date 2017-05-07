@@ -4,6 +4,7 @@ using MongoDB.Driver;
 using DomainTypes.Contracts;
 using System.Collections.Generic;
 using MongoDB.Bson;
+using System.Text.RegularExpressions;
 
 namespace DataAccess
 {
@@ -60,8 +61,10 @@ namespace DataAccess
                 //TODO Instead of looking to see if the user has an account, should check if there are any datastores in the list.
                 var doesUserExist = collection.Find(a => a.AccountId == dataStore.UserId).ToList();
                 _logger.Log("StorageRepository - Create:  Has user created datastore before?: " + doesUserExist.Count, LogLevel.Trace);
-                //TODO check if there are spaces and remove them when creating the ID. They can be in the db name, not in the id.
+                
                 var dataStoreId = dataStore.UserId + "_" + dataStore.DataStoreName;
+                //removing spaces.
+                dataStoreId = Regex.Replace(dataStoreId, @"\s+", "");
                 _logger.Log("StorageRepository - Create: dataStoreId " + dataStoreId, LogLevel.Trace);
                 dataStore.DataStoreId = dataStoreId;
                 
