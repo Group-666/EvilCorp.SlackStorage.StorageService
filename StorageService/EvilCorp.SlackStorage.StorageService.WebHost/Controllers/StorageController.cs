@@ -29,14 +29,14 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
         }
         // GET: api/storage/<userId>
         [HttpGet("{userId}")]
-        public List<DataStore> Get(String userId)
+        public JsonResult Get(String userId)
         {
             List<DataStore> dataStores = _dataStoreRepo.GetAll(userId);
             _logger.Log("StorageController:Get - {userId}: getting all datastores for user" + userId, LogLevel.Trace);
-            return dataStores;
+            return Json(dataStores);
         }
         [HttpGet("{userId}/{dataStoreId}")]
-        public DataStore Get(string userId, string dataStoreId)
+        public JsonResult Get(string userId, string dataStoreId)
         {
             DataStore dataStore;
             try
@@ -52,12 +52,12 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
             }
             
 
-            return dataStore;
+            return Json(dataStore);
         }
 
         // POST api/storage
         [HttpPost("{userId}")]
-        public string Post([FromBody]JObject json, string userId)
+        public JsonResult Post([FromBody]JObject json, string userId)
         {
             try
             {
@@ -68,44 +68,44 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
                 var dataStoreId = _dataStoreRepo.Create(dataStore);
                 _logger.Log("StorageController:Post {userId} :  datastore for user: " + dataStore.UserId + " created with an id of: " + dataStoreId, LogLevel.Trace);
                 
-                return dataStoreId;
+                return Json(dataStoreId);
 
             }
             catch (Exception ex)
             {
                 _logger.Log("StorageController:Post {userId} : Error in trying to create a datastore. Message: " + ex.Message, LogLevel.Error);
-                return ex.Message;
+                return Json(ex.Message);
             }
         }
         [HttpDelete("{userId}/{dataStoreId}")]
-        public string DeleteOneDataStore(string userId, string dataStoreId)
+        public JsonResult DeleteOneDataStore(string userId, string dataStoreId)
         {
             try
             {
                 var message = _dataStoreRepo.DeleteOneDataStore(userId, dataStoreId);
                 _logger.Log("StorageController:Delete {userId}/{dataStoreId} - deleting datastore " + dataStoreId, LogLevel.Trace);
-                return message;
+                return Json(message);
             }
             catch (Exception except)
             {
                 _logger.Log("StorageController:Delete {userId}/{dataStoreId}: "+ except.Message, LogLevel.Critical);
-                return except.Message;
+                return Json(except.Message);
             }
             
         }
         [HttpDelete("{userId}")]
-        public string DeleteAllDataStores(string userId)
+        public JsonResult DeleteAllDataStores(string userId)
         {
             try
             {
                 var message = _dataStoreRepo.DeleteAllDataStores(userId);
                 _logger.Log("StorageController:Delete {userId}/{dataStoreId}: deleting all datastores for user" + userId, LogLevel.Trace);
-                return message;
+                return Json(message);
             }
             catch (Exception except)
             {
                 _logger.Log("StorageController:Delete {userId}/{dataStoreId}: " + except.Message, LogLevel.Critical);
-                return except.Message;
+                return Json(except.Message);
             }
            
         }
