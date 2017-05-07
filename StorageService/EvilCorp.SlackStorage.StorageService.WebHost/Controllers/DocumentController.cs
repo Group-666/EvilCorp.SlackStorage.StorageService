@@ -21,7 +21,7 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
 
         public DocumentController()
         {
-            _logger = ConsoleFactory.CreateConsoleLogger();
+            _logger = ConsoleFactory.CreateLogger();
 
             //Want to prevent hardcoding of the mongoClient IP. 
             _documentRepo = new DocumentRepository(new MongoClient("mongodb://127.0.0.1:32768/"));
@@ -33,11 +33,12 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
             {
                 //Get a particular document from a datastore. Not actually using the userId for anything here.
                 var document = _documentRepo.GetOne(dataStoreId, documentId);
+                _logger.Log("DocumentController:Get - {userId}/{dataStoreId}/data/{documentId} : Document retrieved from datastore " + document, LogLevel.Trace);
                 return document;
             }
             catch (Exception except)
             {
-                _logger.Log(except.Message, LogLevel.Error);
+                _logger.Log("DocumentController:Get - {userId}/{dataStoreId}/data/{documentId} : " + except.Message, LogLevel.Critical);
                 return except.Message;
             }
           
@@ -46,9 +47,11 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
         public string GetAll(string userId, string dataStoreId)
         {
 
+           
             //Json prettifier in the broswer isn't making the json very pretty.
             //Perhaps because the broswer interprets the data as strings rather than json.
             var documents = _documentRepo.GetAll(dataStoreId);
+            _logger.Log("DocumentController:Get - { userId}/{ dataStoreId}/ data /{ documentId} : documents " + documents, LogLevel.Trace);
             return documents;
 
         }
@@ -61,27 +64,29 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
             {
                 var doc = BsonDocument.Parse(json.ToString());
                 var docId = _documentRepo.Insert(doc, dataStoreId);
+                _logger.Log("DocumentController:Post - {userId}/{dataStoreId}: Doc to be inserted " + doc, LogLevel.Trace);
                 return docId;
             }
             catch (Exception except)
             {
-                _logger.Log(except.Message, LogLevel.Error);
+                _logger.Log("DocumentController:Post - {userId}/{dataStoreId}: Doc to be inserted " +except.Message, LogLevel.Critical);
                 return except.Message;
             }
 
         }
         [HttpDelete("{userId}/{dataStoreId}/data/{documentId}")]
-        public string DeleteOne(string userId, string dataStoreId, string documentId)
+        public IActionResult DeleteOne(string userId, string dataStoreId, string documentId)
         {
             try
             {
                 _documentRepo.DeleteDocument(userId, dataStoreId, documentId);
-                return "good bye document";
+                _logger.Log("DocumentController:Post - {userId}/{dataStoreId}/data/{documentId}:  Deleting document with id " + documentId, LogLevel.Trace);
+                return Ok("Funky female baboons");
             }
             catch (Exception except)
             {
-                _logger.Log(except.Message, LogLevel.Critical);
-                return except.Message;
+                _logger.Log("DocumentController: Post - { userId}/{ dataStoreId}/ data /{ documentId}: " + except.Message, LogLevel.Critical);
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
         [HttpDelete("{userId}/{dataStoreId}/data")]
@@ -90,11 +95,12 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
             try
             {
                 _documentRepo.DeleteData(userId, dataStoreId);
+                _logger.Log("DocumentController:Post - {userId}/{dataStoreId}/data/: deleting all data from datastore " + dataStoreId, LogLevel.Trace);
                 return "data exterminated from dataStore: " + dataStoreId;
             }
             catch(Exception except)
             {
-                _logger.Log(except.Message, LogLevel.Critical);
+                _logger.Log("DocumentController: Post - { userId}/{ dataStoreId}/ data /: " +  except.Message, LogLevel.Critical);
                 return except.Message;
             }
             

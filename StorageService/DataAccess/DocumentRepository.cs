@@ -18,7 +18,7 @@ namespace DataAccess
         public DocumentRepository(IMongoClient client)
         {
             _client = client;
-            _logger = ConsoleFactory.CreateConsoleLogger();
+            _logger = ConsoleFactory.CreateLogger();
 
             _db = _client.GetDatabase(database);
         }
@@ -26,13 +26,13 @@ namespace DataAccess
         public string GetOne(string dataStoreId, string documentId)
         {
             //We want to get a document from a dataStore with a particular id.
-
             var collection = _db.GetCollection<BsonDocument>(dataStoreId);
             
             //Id is of type ObjectID, not string, so we need to parse it to an objectID first.            
-            var filter = Builders<BsonDocument>.Filter.Eq("_id", ObjectId.Parse(documentId));          
+            var filter = Builders<BsonDocument>.Filter.Eq("_id", ObjectId.Parse(documentId));
+            _logger.Log("DocumentRepository-GetOne: Filter to find documents: " + filter, LogLevel.Trace);
             var document = collection.Find(filter).FirstOrDefault();
-            _logger.Log("Trying to find a document with id: " + documentId, LogLevel.Trace);
+            _logger.Log("DocumentRepository-GetOne: Trying to find a document with id " + documentId, LogLevel.Trace);
                         
             var documentString = document.ToString();
             return document.ToString();
@@ -45,8 +45,11 @@ namespace DataAccess
 
             //Empty filter matches everything, so everything will be returned.
             var filter = Builders<BsonDocument>.Filter.Empty;
+            _logger.Log("DocumentRepository-GetAll: Filter to find documentsd: " + filter, LogLevel.Trace);
             var documents = collection.Find(filter).ToList();
+            _logger.Log("DocumentRepository-GetAll:Grabbing all documents for datastore with id " + dataStoreId, LogLevel.Trace);
             var jsonDocs = documents.ToJson();
+
            
             return jsonDocs;
         }
@@ -57,8 +60,8 @@ namespace DataAccess
             collection.InsertOne(document);
             var documentId = document["_id"].ToString();
 
-            _logger.Log("Inserted document into " + dataStoreId, LogLevel.Information);
-            _logger.Log("ID of inserted document " + documentId, LogLevel.Information);
+            _logger.Log("DocumentRepository-Insert: Inserted document into " + dataStoreId, LogLevel.Trace);
+            _logger.Log("DocumentRepository-Insert: ID of inserted document " + documentId, LogLevel.Trace);
 
             return documentId;
         }
@@ -66,7 +69,9 @@ namespace DataAccess
         {
             var collection = _db.GetCollection<BsonDocument>(dataStoreId);
             var filter = Builders<BsonDocument>.Filter.Eq("_id", ObjectId.Parse(documentId));
+            _logger.Log("DocumentRepository-DeleteDocument: Filter to find document to be deleted: " + filter , LogLevel.Trace);
             collection.DeleteOne(filter);
+            _logger.Log("DocumentRepository-DeleteDocument: Document with id " + documentId + " in datastore " + dataStoreId + " for user " + userId + " deleted", LogLevel.Trace);
 
             return "DeleteDocument";
         }
@@ -74,8 +79,11 @@ namespace DataAccess
         public string DeleteData(string userId, string dataStoreId)
         {
             var collection = _db.GetCollection<BsonDocument>(dataStoreId);
+
             var filter = Builders<BsonDocument>.Filter.Empty;
+            _logger.Log("DocumentRepository-DeleteData: Filter to find document to be deleted: " + filter, LogLevel.Trace);
             collection.DeleteMany(filter);
+            _logger.Log("DocumentRepository-DeleteDocument: removing all documents from datastore " + dataStoreId, LogLevel.Trace);
 
             return "all documents gone";
         }

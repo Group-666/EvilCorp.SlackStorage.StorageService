@@ -1,24 +1,30 @@
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 using MongoDB.Driver;
 using Moq;
 using DomainTypes;
 using DataAccess;
+using Xunit;
 
 namespace EvilCorp.SlackStorage.Storage.UnitTests
 {
-    [TestClass]
+    
     public class StorageRepositoryTests
     {
-        [TestMethod,TestCategory("DataAccess")]
+        
         public void StorageRepository_Can_Create_DataStore()
         {
-            var dataStore = new DataStore("Samuel L jackson", "sam238as");
+            var dataStore = new DataStore("Samuel L jackson");
             var clientMock = CreateMongoMock(dataStore);
 
             StorageRepository storageRepository = new StorageRepository(clientMock);
 
             storageRepository.Create(dataStore);
+        }
+        [Fact]
+        public void TestThing()
+        {
+            Assert.Equal(42, 19 + 23);
         }
 
         private IMongoClient CreateMongoMock(DataStore dataStore)

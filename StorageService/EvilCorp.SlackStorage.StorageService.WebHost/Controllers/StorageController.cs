@@ -22,7 +22,7 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
 
         public StorageController()
         {
-            _logger = ConsoleFactory.CreateConsoleLogger();
+            _logger = ConsoleFactory.CreateLogger();
 
             //Want to prevent hardcoding of the mongoClient IP. 
             _dataStoreRepo = new StorageRepository(new MongoClient("mongodb://127.0.0.1:32768/"));
@@ -32,6 +32,7 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
         public List<DataStore> Get(String userId)
         {
             List<DataStore> dataStores = _dataStoreRepo.GetAll(userId);
+            _logger.Log("StorageController:Get - {userId}: getting all datastores for user" + userId, LogLevel.Trace);
             return dataStores;
         }
         [HttpGet("{userId}/{dataStoreId}")]
@@ -41,11 +42,12 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
             try
             {
                 dataStore = _dataStoreRepo.GetOne(userId, dataStoreId);
+                _logger.Log("StorageController:Get - {userId}/{dataStoreId}: getting datastore " + dataStoreId, LogLevel.Trace);
             }
             catch (KeyNotFoundException kyfe)
             {
                 //What should I return? An Empty DataStore? Ideally a string but I can't do that.
-                _logger.Log("A datastore with that id was not found for that user", LogLevel.Error);
+                _logger.Log("StorageController:Get - {userId}/{dataStoreId}: A datastore with that id was not found for that user: " + kyfe, LogLevel.Error);
                 return null;
             }
             
@@ -64,14 +66,14 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
 
                 //Creates a datastore for the user specified.
                 var dataStoreId = _dataStoreRepo.Create(dataStore);
-                _logger.Log("datastore for user: " + dataStore.UserId + " created with an id of: " + dataStoreId, LogLevel.Information);
+                _logger.Log("StorageController:Post {userId} :  datastore for user: " + dataStore.UserId + " created with an id of: " + dataStoreId, LogLevel.Trace);
                 
                 return dataStoreId;
 
             }
             catch (Exception ex)
             {
-                _logger.Log("Error in trying to create a datastore. Message: " + ex.Message, LogLevel.Error);
+                _logger.Log("StorageController:Post {userId} : Error in trying to create a datastore. Message: " + ex.Message, LogLevel.Error);
                 return ex.Message;
             }
         }
@@ -81,11 +83,12 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
             try
             {
                 var message = _dataStoreRepo.DeleteOneDataStore(userId, dataStoreId);
+                _logger.Log("StorageController:Delete {userId}/{dataStoreId} - deleting datastore " + dataStoreId, LogLevel.Trace);
                 return message;
             }
             catch (Exception except)
             {
-                _logger.Log(except.Message, LogLevel.Critical);
+                _logger.Log("StorageController:Delete {userId}/{dataStoreId}: "+ except.Message, LogLevel.Critical);
                 return except.Message;
             }
             
@@ -96,11 +99,12 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
             try
             {
                 var message = _dataStoreRepo.DeleteAllDataStores(userId);
+                _logger.Log("StorageController:Delete {userId}/{dataStoreId}: deleting all datastores for user" + userId, LogLevel.Trace);
                 return message;
             }
             catch (Exception except)
             {
-                _logger.Log(except.Message, LogLevel.Critical);
+                _logger.Log("StorageController:Delete {userId}/{dataStoreId}: " + except.Message, LogLevel.Critical);
                 return except.Message;
             }
            

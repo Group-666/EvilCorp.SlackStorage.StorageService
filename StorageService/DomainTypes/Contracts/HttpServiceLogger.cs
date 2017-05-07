@@ -50,7 +50,7 @@ namespace DomainTypes.Contracts
         {
             var json = new JObject
             {
-                ["componet"] = _componentName,
+                ["component"] = _componentName,
                 ["message"] = message,
                 ["level"] = (int)level
             };
