@@ -121,7 +121,7 @@ namespace DataAccess
             
            _db.DropCollection(dataStoreId);
             _logger.Log("StorageRepository - DeleteOneDataStore:  Anhillating datastore " + dataStoreId, LogLevel.Information);
-           var message = "Store with Id: " + dataStoreId + " has been removed";
+           var message = dataStoreId;
            
 
             /**** Updating MetaData ****/
@@ -147,6 +147,8 @@ namespace DataAccess
         {
             //First find all datastores for a user.
             var dataStores = GetDataStoresForAccount(userId);
+
+            var dataStoreCount = dataStores.Count;
             _logger.Log("StorageRepository - DeleteAllDataStores: getting all datastores for a particular user", LogLevel.Trace);
             //Remove each collection. Has problems if datastoreId is null. 
             foreach (DataStore datastore in dataStores) {
@@ -154,8 +156,6 @@ namespace DataAccess
                 _logger.Log("StorageRepository - DeleteAllDataStores: Deleting datastore Id " + datastore.DataStoreId, LogLevel.Trace);
             }
                
-            
-
 
             //Just remove the entire user document instead of just the datastores list. 
             var collection = _db.GetCollection<Account>(_metaDataCollection);
@@ -163,8 +163,8 @@ namespace DataAccess
             collection.DeleteOne(a => a.AccountId == userId);
             _logger.Log("StorageRepository - DeleteAllDataStores: deleting datastore from metadata", LogLevel.Trace);
 
-            //Should we come up with a better message? Or infact even just not return anything? Naaaah.
-            return "gooodbye datastores";
+            //Really want this to return ints. 
+            return dataStoreCount.ToString();
 
         }
 
