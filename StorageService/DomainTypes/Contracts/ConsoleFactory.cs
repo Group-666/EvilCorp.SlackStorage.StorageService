@@ -16,7 +16,7 @@ namespace DomainTypes.Contracts
         public static HttpServiceLogger CreateLogger()
         {
             //Get connection strings from a configuration file. 
-            HttpServiceLogger logger = new HttpServiceLogger("http://localhost:49696", "StorageService", LogLevel.Trace);
+            HttpServiceLogger logger = new HttpServiceLogger("http://localhost:5050", "StorageService", LogLevel.Trace);
 
             return logger;
         }
