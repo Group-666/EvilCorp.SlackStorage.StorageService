@@ -12,7 +12,6 @@ using DomainTypes.Contracts;
 
 namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
 {
-    
     [Route("api/Storage")]
     public class DocumentController : Controller
     {
@@ -23,11 +22,12 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
         {
             _logger = ConsoleFactory.CreateLogger();
 
-            //Want to prevent hardcoding of the mongoClient IP. 
+            //Want to prevent hardcoding of the mongoClient IP.
             _documentRepo = new DocumentRepository(new MongoClient("mongodb://localhost:27017/"));
         }
+
         [HttpGet("{userId}/{dataStoreId}/data/{documentId}")]
-        public JsonResult Get(String userId,String dataStoreId, String documentId)
+        public JsonResult Get(String userId, String dataStoreId, String documentId)
         {
             try
             {
@@ -41,19 +41,16 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
                 _logger.Log("DocumentController:Get - {userId}/{dataStoreId}/data/{documentId} : " + except.Message, LogLevel.Critical);
                 return Json(except.Message);
             }
-          
         }
+
         [HttpGet("{userId}/{dataStoreId}/data")]
         public JsonResult GetAll(string userId, string dataStoreId)
         {
-
-           
             //Json prettifier in the broswer isn't making the json very pretty.
             //Perhaps because the broswer interprets the data as strings rather than json.
             var documents = _documentRepo.GetAll(dataStoreId);
             _logger.Log("DocumentController:Get - { userId}/{ dataStoreId}/ data /{ documentId} : documents " + documents, LogLevel.Trace);
             return Json(documents);
-
         }
 
         [HttpPost("{userId}/{dataStoreId}")]
@@ -69,11 +66,11 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
             }
             catch (Exception except)
             {
-                _logger.Log("DocumentController:Post - {userId}/{dataStoreId}: Doc to be inserted " +except.Message, LogLevel.Critical);
+                _logger.Log("DocumentController:Post - {userId}/{dataStoreId}: Doc to be inserted " + except.Message, LogLevel.Critical);
                 return Json(except.Message);
             }
-
         }
+
         [HttpDelete("{userId}/{dataStoreId}/data/{documentId}")]
         public JsonResult DeleteOne(string userId, string dataStoreId, string documentId)
         {
@@ -89,6 +86,7 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
                 return Json(except.Message);
             }
         }
+
         [HttpDelete("{userId}/{dataStoreId}/data")]
         public JsonResult DeleteAllData(string userId, string dataStoreId)
         {
@@ -98,16 +96,16 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
                 _logger.Log("DocumentController:Post - {userId}/{dataStoreId}/data/: deleting all data from datastore " + dataStoreId, LogLevel.Trace);
                 return Json(dataStoreId);
             }
-            catch(Exception except)
+            catch (Exception except)
             {
-                _logger.Log("DocumentController: Post - { userId}/{ dataStoreId}/ data /: " +  except.Message, LogLevel.Critical);
+                _logger.Log("DocumentController: Post - { userId}/{ dataStoreId}/ data /: " + except.Message, LogLevel.Critical);
                 return Json(except.Message);
             }
-            
         }
-        [HttpPut("{userId}/{dataStoreId}/data/{documentId}")]
-        public JsonResult updateDocument(string userId, string dataStoreId, string documentId, [FromBody]JObject json) {
 
+        [HttpPut("{userId}/{dataStoreId}/data/{documentId}")]
+        public JsonResult updateDocument(string userId, string dataStoreId, string documentId, [FromBody]JObject json)
+        {
             //Find particular document.
             //Replace said document with whatever is in the json.
             try

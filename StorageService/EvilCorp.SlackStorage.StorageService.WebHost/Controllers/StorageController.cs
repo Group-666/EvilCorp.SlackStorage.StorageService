@@ -8,12 +8,10 @@ using MongoDB.Driver;
 using DomainTypes.Contracts;
 using MongoDB.Bson;
 
-
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
 {
-
     [Route("api/[controller]")]
     public class StorageController : Controller
     {
@@ -24,9 +22,10 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
         {
             _logger = ConsoleFactory.CreateLogger();
 
-            //Want to prevent hardcoding of the mongoClient IP. 
-            _dataStoreRepo = new StorageRepository(new MongoClient("mongodb://127.0.0.1:32768/"));
+            //Want to prevent hardcoding of the mongoClient IP.
+            _dataStoreRepo = new StorageRepository(new MongoClient("mongodb://127.0.0.1:27017/"));
         }
+
         // GET: api/storage/<userId>
         [HttpGet("{userId}")]
         public JsonResult Get(String userId)
@@ -35,6 +34,7 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
             _logger.Log("StorageController:Get - {userId}: getting all datastores for user" + userId, LogLevel.Trace);
             return Json(dataStores);
         }
+
         [HttpGet("{userId}/{dataStoreId}")]
         public JsonResult Get(string userId, string dataStoreId)
         {
@@ -50,7 +50,6 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
                 _logger.Log("StorageController:Get - {userId}/{dataStoreId}: A datastore with that id was not found for that user: " + kyfe, LogLevel.Error);
                 return null;
             }
-            
 
             return Json(dataStore);
         }
@@ -67,9 +66,8 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
                 //Creates a datastore for the user specified.
                 var dataStoreId = _dataStoreRepo.Create(dataStore);
                 _logger.Log("StorageController:Post {userId} :  datastore for user: " + dataStore.UserId + " created with an id of: " + dataStoreId, LogLevel.Trace);
-                
-                return Json(dataStoreId);
 
+                return Json(dataStoreId);
             }
             catch (Exception ex)
             {
@@ -77,6 +75,7 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
                 return Json(ex.Message);
             }
         }
+
         [HttpDelete("{userId}/{dataStoreId}")]
         public JsonResult DeleteOneDataStore(string userId, string dataStoreId)
         {
@@ -88,11 +87,11 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
             }
             catch (Exception except)
             {
-                _logger.Log("StorageController:Delete {userId}/{dataStoreId}: "+ except.Message, LogLevel.Critical);
+                _logger.Log("StorageController:Delete {userId}/{dataStoreId}: " + except.Message, LogLevel.Critical);
                 return Json(except.Message);
             }
-            
         }
+
         [HttpDelete("{userId}")]
         public JsonResult DeleteAllDataStores(string userId)
         {
@@ -107,12 +106,6 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
                 _logger.Log("StorageController:Delete {userId}/{dataStoreId}: " + except.Message, LogLevel.Critical);
                 return Json(except.Message);
             }
-           
         }
-        
-     
-
-
- 
     }
 }
