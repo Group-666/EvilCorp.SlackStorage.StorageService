@@ -13,10 +13,11 @@ namespace DomainTypes.Contracts
 
             return consoleLogger;
         }
+
         public static HttpServiceLogger CreateLogger()
         {
-            //Get connection strings from a configuration file. 
-            HttpServiceLogger logger = new HttpServiceLogger("http://localhost:5050", "StorageService", LogLevel.Trace);
+            //Get connection strings from a configuration file.
+            HttpServiceLogger logger = new HttpServiceLogger("http://localhost:8085", "StorageService", LogLevel.Trace);
 
             return logger;
         }
