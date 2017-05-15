@@ -56,14 +56,31 @@ namespace DataAccess
 
         public string Insert(BsonDocument document, string dataStoreId)
         {
-            var collection = _db.GetCollection<BsonDocument>(dataStoreId);
-            collection.InsertOne(document);
-            var documentId = document["_id"].ToString();
+            
+            var collections = _db.ListCollections();
+            while (collections.MoveNext())
+            {
+                foreach(var datastore in collections.Current)
+                {
+                    if (datastore["name"].AsString.Equals(dataStoreId))
+                    {
+                        var collection = _db.GetCollection<BsonDocument>(dataStoreId);
+                        collection.InsertOne(document);
 
-            _logger.Log("DocumentRepository-Insert: Inserted document into " + dataStoreId, LogLevel.Trace);
-            _logger.Log("DocumentRepository-Insert: ID of inserted document " + documentId, LogLevel.Trace);
+                        var documentId = document["_id"].ToString();
 
-            return documentId;
+                        _logger.Log("DocumentRepository-Insert: Inserted document into " + dataStoreId, LogLevel.Trace);
+                        _logger.Log("DocumentRepository-Insert: ID of inserted document " + documentId, LogLevel.Trace);
+
+                        return documentId;
+                    }
+
+                }
+            }
+
+           
+
+            return "No datastore with that Id found";
         }
         public string DeleteDocument(string userId, string dataStoreId, string documentId)
         {
