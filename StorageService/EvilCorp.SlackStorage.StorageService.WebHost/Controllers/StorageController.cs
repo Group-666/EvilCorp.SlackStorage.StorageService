@@ -101,7 +101,8 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
             {
                 var message = _dataStoreRepo.DeleteOneDataStore(userId, dataStoreId);
                 _logger.Log("StorageController:Delete {userId}/{dataStoreId} - deleting datastore " + dataStoreId, LogLevel.Trace);
-                return Ok(JObject.Parse(dataStoreId));
+                var json = JsonConvert.SerializeObject(dataStoreId);
+                return Ok(JObject.Parse(json));
             }
             catch (Exception except)
             {
@@ -117,7 +118,8 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
             {
                 var message = _dataStoreRepo.DeleteAllDataStores(userId);
                 _logger.Log("StorageController:Delete {userId}/{dataStoreId}: deleting all datastores for user" + userId, LogLevel.Trace);
-                return Ok(JObject.Parse(message));
+                var json = JsonConvert.SerializeObject(message);
+                return Ok(JObject.Parse(json));
             }
             catch (Exception except)
             {

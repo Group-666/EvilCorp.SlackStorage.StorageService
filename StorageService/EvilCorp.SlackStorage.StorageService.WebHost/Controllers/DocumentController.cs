@@ -88,7 +88,9 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
                 var doc = BsonDocument.Parse(json.ToString());
                 var docId = _documentRepo.Insert(doc, dataStoreId);
                 _logger.Log("DocumentController:Post - {userId}/{dataStoreId}: Doc to be inserted " + doc, LogLevel.Trace);
-                return Ok(JObject.Parse(docId));
+
+                var jsonString = JsonConvert.SerializeObject(docId); 
+                return Ok(JObject.Parse(jsonString));
             }
             catch (Exception except)
             {
@@ -104,7 +106,10 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
             {
                 var docId = _documentRepo.DeleteDocument(userId, dataStoreId, documentId);
                 _logger.Log("DocumentController:Post - {userId}/{dataStoreId}/data/{documentId}:  Deleting document with id " + documentId, LogLevel.Trace);
-                return Ok(JObject.Parse(docId));
+
+                var json = JsonConvert.SerializeObject(docId);
+
+                return Ok(JObject.Parse(json));
             }
             catch (Exception except)
             {
@@ -120,7 +125,8 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
             {
                 _documentRepo.DeleteData(userId, dataStoreId);
                 _logger.Log("DocumentController:Post - {userId}/{dataStoreId}/data/: deleting all data from datastore " + dataStoreId, LogLevel.Trace);
-                return Ok(JObject.Parse("data for " + userId + " removed"));
+                var json = JsonConvert.SerializeObject("data for " + userId + " removed");
+                return Ok(JObject.Parse(json));
             }
             catch (Exception except)
             {
@@ -138,7 +144,9 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
             {
                 var doc = BsonDocument.Parse(json.ToString());
                 _documentRepo.UpdateDocument(dataStoreId, documentId, doc);
-                return Ok(JObject.Parse(documentId));
+
+                var jsonString = JsonConvert.SerializeObject(documentId);
+                return Ok(JObject.Parse(jsonString));
             }
             catch (Exception except)
             {
