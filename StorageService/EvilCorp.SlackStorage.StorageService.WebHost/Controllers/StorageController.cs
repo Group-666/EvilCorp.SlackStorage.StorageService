@@ -49,8 +49,6 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
                 _logger.Log("StorageController:Get - {userId}: No datastores for user", LogLevel.Information);
                 return StatusCode(204, "No datastores for user");
             }
-
-           
         }
 
         [HttpGet("{userId}/{dataStoreId}")]
@@ -72,8 +70,6 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
                 _logger.Log("StorageController:Get - {userId}/{dataStoreId}: A datastore with that id was not found for that user: " + kyfe, LogLevel.Error);
                 return StatusCode(404, "no datastore with that id");
             }
-
-            
         }
 
         // POST api/storage
@@ -91,9 +87,9 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
 
                 return Ok(JObject.Parse(dataStoreId));
             }
-            catch (Exception ex)
+            catch (Exception except)
             {
-                _logger.Log("StorageController:Post {userId} : Error in trying to create a datastore. Message: " + ex.Message, LogLevel.Error);
+                _logger.Log("StorageController:Post {userId} : Error in trying to create a datastore. Message: " + except.Message, LogLevel.Error);
                 return StatusCode(500, except.Message);
             }
         }
