@@ -87,6 +87,12 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
             {
                 var doc = BsonDocument.Parse(json.ToString());
                 var elementId = _documentRepo.Insert(doc, dataStoreId);
+
+                if (elementId.Equals("No datastore with that Id found"))
+                {
+                    return StatusCode(404, "No datastore with that Id found");
+                }
+
                 _logger.Log("DocumentController:Post - {userId}/{dataStoreId}: Doc to be inserted " + doc, LogLevel.Trace);
 
                 var jsonString = JsonConvert.SerializeObject(elementId); 
