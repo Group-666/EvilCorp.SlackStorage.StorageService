@@ -86,10 +86,10 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
             try
             {
                 var doc = BsonDocument.Parse(json.ToString());
-                var docId = _documentRepo.Insert(doc, dataStoreId);
+                var elementId = _documentRepo.Insert(doc, dataStoreId);
                 _logger.Log("DocumentController:Post - {userId}/{dataStoreId}: Doc to be inserted " + doc, LogLevel.Trace);
 
-                var jsonString = JsonConvert.SerializeObject(docId); 
+                var jsonString = JsonConvert.SerializeObject(elementId); 
                 return Ok(JObject.Parse(jsonString));
             }
             catch (Exception except)
@@ -104,12 +104,12 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
         {
             try
             {
-                var docId = _documentRepo.DeleteDocument(userId, dataStoreId, documentId);
+                var elementId = _documentRepo.DeleteDocument(userId, dataStoreId, documentId);
                 _logger.Log("DocumentController:Post - {userId}/{dataStoreId}/data/{documentId}:  Deleting document with id " + documentId, LogLevel.Trace);
 
-                var json = JsonConvert.SerializeObject(docId);
+                
 
-                return Ok(JObject.Parse(json));
+                return Ok(JObject.FromObject(new { elementId }));
             }
             catch (Exception except)
             {
@@ -144,9 +144,9 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
             {
                 var doc = BsonDocument.Parse(json.ToString());
                 _documentRepo.UpdateDocument(dataStoreId, documentId, doc);
-
-                var jsonString = JsonConvert.SerializeObject(documentId);
-                return Ok(JObject.Parse(jsonString));
+                var elementId = documentId;
+                //var jsonString = JsonConvert.SerializeObject(documentId);
+                return Ok(JObject.FromObject(new { elementId }));
             }
             catch (Exception except)
             {
