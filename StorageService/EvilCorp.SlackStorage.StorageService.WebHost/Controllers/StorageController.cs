@@ -29,7 +29,7 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
 
         // GET: api/storage/<userId>
         [HttpGet("{userId}")]
-        public IActionResult Get(String userId)
+        public IActionResult Get(string userId)
         {
             List<DataStore> dataStores = _dataStoreRepo.GetAll(userId);
             var count = dataStores.Count;
@@ -47,7 +47,7 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
             else
             {
                 _logger.Log("StorageController:Get - {userId}: No datastores for user", LogLevel.Information);
-                return StatusCode(204, "No datastores for user");
+                return StatusCode(404, "No datastores for user");
             }
         }
 
@@ -85,7 +85,7 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
                 var dataStoreId = _dataStoreRepo.Create(dataStore);
                 _logger.Log("StorageController:Post {userId} :  datastore for user: " + dataStore.UserId + " created with an id of: " + dataStoreId, LogLevel.Trace);
 
-                return Ok(JObject.Parse(dataStoreId));
+                return Ok(JObject.FromObject(new { dataStoreId }));
             }
             catch (Exception except)
             {
