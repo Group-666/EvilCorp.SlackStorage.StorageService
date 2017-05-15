@@ -94,7 +94,7 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
             catch (Exception ex)
             {
                 _logger.Log("StorageController:Post {userId} : Error in trying to create a datastore. Message: " + ex.Message, LogLevel.Error);
-                return StatusCode(500, "error in trying to create a datastore");
+                return StatusCode(500, except.Message);
             }
         }
 
@@ -110,7 +110,7 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
             catch (Exception except)
             {
                 _logger.Log("StorageController:Delete {userId}/{dataStoreId}: " + except.Message, LogLevel.Critical);
-                return StatusCode(500, "Something went wrong with the delete");
+                return StatusCode(500, except.Message);
             }
         }
 
@@ -126,7 +126,7 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
             catch (Exception except)
             {
                 _logger.Log("StorageController:Delete {userId}/{dataStoreId}: " + except.Message, LogLevel.Critical);
-                return StatusCode(500, "something went wrong");
+                return StatusCode(500, except.Message);
             }
         }
     }

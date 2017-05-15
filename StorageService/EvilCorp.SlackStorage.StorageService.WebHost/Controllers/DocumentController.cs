@@ -54,7 +54,7 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
             catch (Exception except)
             {
                 _logger.Log("DocumentController:Get - {userId}/{dataStoreId}/data/{documentId} : " + except.Message, LogLevel.Critical);
-                return StatusCode(500, "Something went wrong");
+                return StatusCode(500, except.Message);
             }
         }
 
@@ -93,7 +93,7 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
             catch (Exception except)
             {
                 _logger.Log("DocumentController:Post - {userId}/{dataStoreId}: Doc to be inserted " + except.Message, LogLevel.Critical);
-                return StatusCode(500, "Something went wrong");
+                return StatusCode(500, except.Message);
             }
         }
 
@@ -109,7 +109,7 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
             catch (Exception except)
             {
                 _logger.Log("DocumentController: Post - { userId}/{ dataStoreId}/ data /{ documentId}: " + except.Message, LogLevel.Critical);
-                return StatusCode(500, "Something went wrong");
+                return StatusCode(500, except.Message);
             }
         }
 
@@ -125,7 +125,7 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
             catch (Exception except)
             {
                 _logger.Log("DocumentController: Post - { userId}/{ dataStoreId}/ data /: " + except.Message, LogLevel.Critical);
-                return StatusCode(500, "Something went wrong");
+                return StatusCode(500, except.Message);
             }
         }
 
@@ -143,7 +143,7 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
             catch (Exception except)
             {
                 _logger.Log("DocumentController: Put - {userId}/{ dataStoreId}/ data /{ documentId}: " + except.Message, LogLevel.Critical);
-                return StatusCode(500, "Something went wrong");
+                return StatusCode(500, except.Message);
             }
 
         }
