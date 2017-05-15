@@ -36,7 +36,7 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
             {
                 //var json = JsonConvert.SerializeObject
                 //Get a particular document from a datastore. Not actually using the userId for anything here.
-                
+
                 var document = _documentRepo.GetOne(dataStoreId, documentId);
                 if (document.Length != 0)
                 {
@@ -49,7 +49,6 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
                     _logger.Log("DocumentController: Get - { userId}/{ dataStoreId}/ data /{ documentId} : Document " + documentId + " does not exist", LogLevel.Information);
                     return StatusCode(204, "That document does not exist");
                 }
-              
             }
             catch (Exception except)
             {
@@ -61,7 +60,6 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
         [HttpGet("{userId}/{dataStoreId}/data")]
         public IActionResult GetAll(string userId, string dataStoreId)
         {
-          
             var documents = _documentRepo.GetAll(dataStoreId);
 
             if (documents.Length != 0)
@@ -75,8 +73,6 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
                 _logger.Log("DocumentController:Get - { userId}/{ dataStoreId}/ data /{ documentId} No documents for that user", LogLevel.Information);
                 return StatusCode(204, "No documents for user");
             }
-
-         
         }
 
         [HttpPost("{userId}/{dataStoreId}")]
@@ -89,8 +85,7 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
                 var elementId = _documentRepo.Insert(doc, dataStoreId);
                 _logger.Log("DocumentController:Post - {userId}/{dataStoreId}: Doc to be inserted " + doc, LogLevel.Trace);
 
-                var jsonString = JsonConvert.SerializeObject(elementId); 
-                return Ok(JObject.Parse(jsonString));
+                return Ok(JObject.FromObject(new { elementId }));
             }
             catch (Exception except)
             {
@@ -106,8 +101,6 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
             {
                 var elementId = _documentRepo.DeleteDocument(userId, dataStoreId, documentId);
                 _logger.Log("DocumentController:Post - {userId}/{dataStoreId}/data/{documentId}:  Deleting document with id " + documentId, LogLevel.Trace);
-
-                
 
                 return Ok(JObject.FromObject(new { elementId }));
             }
@@ -153,7 +146,6 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
                 _logger.Log("DocumentController: Put - {userId}/{ dataStoreId}/ data /{ documentId}: " + except.Message, LogLevel.Critical);
                 return StatusCode(500, except.Message);
             }
-
         }
     }
 }
