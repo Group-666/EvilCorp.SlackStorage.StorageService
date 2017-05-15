@@ -7,6 +7,7 @@ using DataAccess;
 using MongoDB.Driver;
 using DomainTypes.Contracts;
 using MongoDB.Bson;
+using Newtonsoft.Json;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -28,35 +29,56 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
 
         // GET: api/storage/<userId>
         [HttpGet("{userId}")]
-        public JsonResult Get(String userId)
+        public IActionResult Get(String userId)
         {
             List<DataStore> dataStores = _dataStoreRepo.GetAll(userId);
+            var count = dataStores.Count;
             _logger.Log("StorageController:Get - {userId}: getting all datastores for user" + userId, LogLevel.Trace);
-            return Json(dataStores);
+
+            if (dataStores.Count != 0)
+            {
+                var json = JsonConvert.SerializeObject(new
+                {
+                    result = dataStores
+                });
+
+                return Ok(JObject.Parse(json));
+            }
+            else
+            {
+                _logger.Log("StorageController:Get - {userId}: No datastores for user", LogLevel.Information);
+                return StatusCode(204, "No datastores for user");
+            }
+
+           
         }
 
         [HttpGet("{userId}/{dataStoreId}")]
-        public JsonResult Get(string userId, string dataStoreId)
+        public IActionResult Get(string userId, string dataStoreId)
         {
             DataStore dataStore;
             try
             {
                 dataStore = _dataStoreRepo.GetOne(userId, dataStoreId);
                 _logger.Log("StorageController:Get - {userId}/{dataStoreId}: getting datastore " + dataStoreId, LogLevel.Trace);
+
+                var json = JsonConvert.SerializeObject(dataStore);
+
+                return Ok(JObject.Parse(json));
             }
             catch (KeyNotFoundException kyfe)
             {
                 //What should I return? An Empty DataStore? Ideally a string but I can't do that.
                 _logger.Log("StorageController:Get - {userId}/{dataStoreId}: A datastore with that id was not found for that user: " + kyfe, LogLevel.Error);
-                return null;
+                return StatusCode(404, "no datastore with that id");
             }
 
-            return Json(dataStore);
+            
         }
 
         // POST api/storage
         [HttpPost("{userId}")]
-        public JsonResult Post([FromBody]JObject json, string userId)
+        public IActionResult Post([FromBody]JObject json, string userId)
         {
             try
             {
@@ -67,44 +89,44 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
                 var dataStoreId = _dataStoreRepo.Create(dataStore);
                 _logger.Log("StorageController:Post {userId} :  datastore for user: " + dataStore.UserId + " created with an id of: " + dataStoreId, LogLevel.Trace);
 
-                return Json(dataStoreId);
+                return Ok(JObject.Parse(dataStoreId));
             }
             catch (Exception ex)
             {
                 _logger.Log("StorageController:Post {userId} : Error in trying to create a datastore. Message: " + ex.Message, LogLevel.Error);
-                return Json(ex.Message);
+                return StatusCode(500, "error in trying to create a datastore");
             }
         }
 
         [HttpDelete("{userId}/{dataStoreId}")]
-        public JsonResult DeleteOneDataStore(string userId, string dataStoreId)
+        public IActionResult DeleteOneDataStore(string userId, string dataStoreId)
         {
             try
             {
                 var message = _dataStoreRepo.DeleteOneDataStore(userId, dataStoreId);
                 _logger.Log("StorageController:Delete {userId}/{dataStoreId} - deleting datastore " + dataStoreId, LogLevel.Trace);
-                return Json(message);
+                return Ok(JObject.Parse(dataStoreId));
             }
             catch (Exception except)
             {
                 _logger.Log("StorageController:Delete {userId}/{dataStoreId}: " + except.Message, LogLevel.Critical);
-                return Json(except.Message);
+                return StatusCode(500, "Something went wrong with the delete");
             }
         }
 
         [HttpDelete("{userId}")]
-        public JsonResult DeleteAllDataStores(string userId)
+        public IActionResult DeleteAllDataStores(string userId)
         {
             try
             {
                 var message = _dataStoreRepo.DeleteAllDataStores(userId);
                 _logger.Log("StorageController:Delete {userId}/{dataStoreId}: deleting all datastores for user" + userId, LogLevel.Trace);
-                return Json(message);
+                return Ok(JObject.Parse(message));
             }
             catch (Exception except)
             {
                 _logger.Log("StorageController:Delete {userId}/{dataStoreId}: " + except.Message, LogLevel.Critical);
-                return Json(except.Message);
+                return StatusCode(500, "something went wrong");
             }
         }
     }
