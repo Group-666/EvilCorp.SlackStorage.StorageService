@@ -73,12 +73,14 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
             }
 
             var documents = _documentRepo.GetAll(dataStoreId);
-            Console.WriteLine(documents.Length);
+            
             if (documents.Length != 0)
             {
                 _logger.Log("DocumentController:Get - { userId}/{ dataStoreId}/ data /{ documentId} : documents " + documents, LogLevel.Trace);
-                var json = JsonConvert.SerializeObject(documents);
-                return Ok(JObject.Parse(json));
+                
+
+                
+                return Ok(documents);
             }
             else
             {

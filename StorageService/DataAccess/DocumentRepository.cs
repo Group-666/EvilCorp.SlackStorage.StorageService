@@ -5,6 +5,8 @@ using MongoDB.Bson;
 using MongoDB.Driver;
 using DomainTypes.Contracts;
 using DomainTypes;
+using Newtonsoft.Json.Linq;
+using MongoDB.Bson.IO;
 
 namespace DataAccess
 {
@@ -48,9 +50,13 @@ namespace DataAccess
             _logger.Log("DocumentRepository-GetAll: Filter to find documentsd: " + filter, LogLevel.Trace);
             var documents = collection.Find(filter).ToList();
             _logger.Log("DocumentRepository-GetAll:Grabbing all documents for datastore with id " + dataStoreId, LogLevel.Trace);
-            var jsonDocs = documents.ToJson();
 
-           
+            //Create list, convert each ele
+            var jsonWriterSettings = new JsonWriterSettings { OutputMode = JsonOutputMode.Strict }; // key part
+            string jsonDocs = documents.ToJson(jsonWriterSettings);
+
+
+
             return jsonDocs;
         }
 
