@@ -8,6 +8,9 @@ using MongoDB.Driver;
 using DomainTypes.Contracts;
 using MongoDB.Bson;
 using Newtonsoft.Json;
+using Microsoft.Extensions.Options;
+
+
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -19,12 +22,12 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
         private readonly ILogger _logger;
         private readonly IStorageRepository _dataStoreRepo;
 
+       
         public StorageController()
         {
             _logger = ConsoleFactory.CreateLogger();
-
             //Want to prevent hardcoding of the mongoClient IP.
-            _dataStoreRepo = new StorageRepository(new MongoClient("mongodb://localhost:27017/"));
+            _dataStoreRepo = new StorageRepository(new MongoClient("mongodb://localhost:32768/"));
         }
 
         // GET: api/storage/<userId>
@@ -55,6 +58,13 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
         public IActionResult Get(string userId, string dataStoreId)
         {
             DataStore dataStore;
+            //Parse datastoreID and make sure the userId part coincides with the userId.
+            string[] userIdFromDataStore = dataStoreId.Split('_');           
+            if (!userIdFromDataStore[0].Equals(userId))
+            {
+                return StatusCode(400, "userId does not match userid in datastoreId. Either the userId or datastoreId is incorrect");
+            }
+
             try
             {
                 dataStore = _dataStoreRepo.GetOne(userId, dataStoreId);
@@ -76,6 +86,7 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
         [HttpPost("{userId}")]
         public IActionResult Post([FromBody]JObject json, string userId)
         {
+           
             try
             {
                 var dataStore = DataStoreParser.Parse(json);
@@ -97,6 +108,11 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
         [HttpDelete("{userId}/{dataStoreId}")]
         public IActionResult DeleteOneDataStore(string userId, string dataStoreId)
         {
+            string[] userIdFromDataStore = dataStoreId.Split('_');
+            if (!userIdFromDataStore[0].Equals(userId))
+            {
+                return StatusCode(400, "userId does not match userid in datastoreId. Either the userId or datastoreId is incorrect");
+            }
             try
             {
                 var message = _dataStoreRepo.DeleteOneDataStore(userId, dataStoreId);
@@ -127,5 +143,6 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
                 return StatusCode(500, except.Message);
             }
         }
+    
     }
 }

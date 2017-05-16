@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using DomainTypes.Contracts;
+using DataAccess;
 
 namespace EvilCorp.SlackStorage.StorageService.WebHost
 {
@@ -20,6 +21,7 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
+
             Configuration = builder.Build();
 
             
@@ -31,8 +33,9 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost
         public void ConfigureServices(IServiceCollection services)
         {
             // Add framework services.
-            //services.AddSingleton<IConfiguration>(Configuration);
+            
             services.AddMvc();
+           
 
         }
 

@@ -26,12 +26,18 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
             //Want to prevent hardcoding of the mongoClient IP.
             //
             //mongodb://localhost:27017/
-            _documentRepo = new DocumentRepository(new MongoClient("mongodb://localhost:27017/"));
+            _documentRepo = new DocumentRepository(new MongoClient("mongodb://localhost:32768/"));
         }
 
         [HttpGet("{userId}/{dataStoreId}/data/{documentId}")]
-        public IActionResult Get(String userId, String dataStoreId, String documentId)
+        public IActionResult Get(string userId, string dataStoreId, string documentId)
         {
+
+            string[] userIdFromDataStore = dataStoreId.Split('_');
+            if (!userIdFromDataStore[0].Equals(userId))
+            {
+                return StatusCode(400, "userId does not match userid in datastoreId. Either the userId or datastoreId is incorrect");
+            }
             try
             {
                 //var json = JsonConvert.SerializeObject
@@ -47,7 +53,7 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
                 else
                 {
                     _logger.Log("DocumentController: Get - { userId}/{ dataStoreId}/ data /{ documentId} : Document " + documentId + " does not exist", LogLevel.Information);
-                    return StatusCode(204, "That document does not exist");
+                    return StatusCode(404, "That document does not exist");
                 }
             }
             catch (Exception except)
@@ -60,8 +66,14 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
         [HttpGet("{userId}/{dataStoreId}/data")]
         public IActionResult GetAll(string userId, string dataStoreId)
         {
-            var documents = _documentRepo.GetAll(dataStoreId);
+            string[] userIdFromDataStore = dataStoreId.Split('_');
+            if (!userIdFromDataStore[0].Equals(userId))
+            {
+                return StatusCode(400, "userId does not match userid in datastoreId. Either the userId or datastoreId is incorrect");
+            }
 
+            var documents = _documentRepo.GetAll(dataStoreId);
+            Console.WriteLine(documents.Length);
             if (documents.Length != 0)
             {
                 _logger.Log("DocumentController:Get - { userId}/{ dataStoreId}/ data /{ documentId} : documents " + documents, LogLevel.Trace);
@@ -71,13 +83,19 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
             else
             {
                 _logger.Log("DocumentController:Get - { userId}/{ dataStoreId}/ data /{ documentId} No documents for that user", LogLevel.Information);
-                return StatusCode(204, "No documents for user");
+                return StatusCode(404, "No documents for user");
             }
         }
 
         [HttpPost("{userId}/{dataStoreId}")]
         public IActionResult Post([FromBody]JObject json, string userId, string dataStoreId)
         {
+
+            string[] userIdFromDataStore = dataStoreId.Split('_');
+            if (!userIdFromDataStore[0].Equals(userId))
+            {
+                return StatusCode(400, "userId does not match userid in datastoreId. Either the userId or datastoreId is incorrect");
+            }
             //Insert a document into a datastore.
             try
             {
@@ -103,6 +121,11 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
         [HttpDelete("{userId}/{dataStoreId}/data/{documentId}")]
         public IActionResult DeleteOne(string userId, string dataStoreId, string documentId)
         {
+            string[] userIdFromDataStore = dataStoreId.Split('_');
+            if (!userIdFromDataStore[0].Equals(userId))
+            {
+                return StatusCode(400, "userId does not match userid in datastoreId. Either the userId or datastoreId is incorrect");
+            }
             try
             {
                 var elementId = _documentRepo.DeleteDocument(userId, dataStoreId, documentId);
@@ -120,6 +143,11 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
         [HttpDelete("{userId}/{dataStoreId}/data")]
         public IActionResult DeleteAllData(string userId, string dataStoreId)
         {
+            string[] userIdFromDataStore = dataStoreId.Split('_');
+            if (!userIdFromDataStore[0].Equals(userId))
+            {
+                return StatusCode(400, "userId does not match userid in datastoreId. Either the userId or datastoreId is incorrect");
+            }
             try
             {
                 _documentRepo.DeleteData(userId, dataStoreId);
@@ -139,6 +167,11 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
         {
             //Find particular document.
             //Replace said document with whatever is in the json.
+            string[] userIdFromDataStore = dataStoreId.Split('_');
+            if (!userIdFromDataStore[0].Equals(userId))
+            {
+                return StatusCode(400, "userId does not match userid in datastoreId. Either the userId or datastoreId is incorrect");
+            }
             try
             {
                 var doc = BsonDocument.Parse(json.ToString());
