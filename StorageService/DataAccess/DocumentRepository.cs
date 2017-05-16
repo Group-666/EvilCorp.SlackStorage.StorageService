@@ -35,9 +35,15 @@ namespace DataAccess
             _logger.Log("DocumentRepository-GetOne: Filter to find documents: " + filter, LogLevel.Trace);
             var document = collection.Find(filter).FirstOrDefault();
             _logger.Log("DocumentRepository-GetOne: Trying to find a document with id " + documentId, LogLevel.Trace);
-                        
-            var documentString = document.ToString();
-            return document.ToString();
+            if (document == null)
+            {
+                return "";
+            }
+            else {
+                var documentString = document.ToJson();
+                return documentString;
+            }
+            
             
         }
         public string GetAll(string dataStoreId)

@@ -174,6 +174,8 @@ namespace DataAccess
             List<DataStore> dataStores = new List<DataStore>();
             var collection = _db.GetCollection<Account>("collectionMetaData");
             var list = collection.Find(m => m.AccountId == userId).ToList();
+
+   
             _logger.Log("StorageRepository - GetDataStoresForAccount: Found list of collections belonging to user in metadata", LogLevel.Trace);
             //There should only be one account in the list anyway
             if (list.Count != 0) {

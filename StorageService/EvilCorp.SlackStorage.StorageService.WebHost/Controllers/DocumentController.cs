@@ -46,9 +46,9 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
                 var document = _documentRepo.GetOne(dataStoreId, documentId);
                 if (document.Length != 0)
                 {
-                    var json = JsonConvert.SerializeObject(document);
+                    //var json = JsonConvert.SerializeObject(document);
                     _logger.Log("DocumentController:Get - {userId}/{dataStoreId}/data/{documentId} : Document retrieved from datastore " + document, LogLevel.Trace);
-                    return Ok(JObject.Parse(json));
+                    return Ok(document);
                 }
                 else
                 {
@@ -74,12 +74,10 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
 
             var documents = _documentRepo.GetAll(dataStoreId);
             
-            if (documents.Length != 0)
+            //Currently documents can contain an empty array [] which is why we must have more than 2 characters. 
+            if (documents.Length > 2)
             {
                 _logger.Log("DocumentController:Get - { userId}/{ dataStoreId}/ data /{ documentId} : documents " + documents, LogLevel.Trace);
-                
-
-                
                 return Ok(documents);
             }
             else
