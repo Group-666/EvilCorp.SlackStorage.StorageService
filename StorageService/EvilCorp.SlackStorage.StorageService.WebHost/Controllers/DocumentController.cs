@@ -26,7 +26,7 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
             //Want to prevent hardcoding of the mongoClient IP.
             //
             //mongodb://localhost:27017/
-            _documentRepo = new DocumentRepository(new MongoClient("mongodb://localhost:32768/"));
+            _documentRepo = new DocumentRepository(new MongoClient("mongodb://localhost:27017/"));
         }
 
         [HttpGet("{userId}/{dataStoreId}/data/{documentId}")]

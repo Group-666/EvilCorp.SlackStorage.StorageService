@@ -27,7 +27,7 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
         {
             _logger = ConsoleFactory.CreateLogger();
             //Want to prevent hardcoding of the mongoClient IP.
-            _dataStoreRepo = new StorageRepository(new MongoClient("mongodb://localhost:32768/"));
+            _dataStoreRepo = new StorageRepository(new MongoClient("mongodb://localhost:27017/"));
         }
 
         // GET: api/storage/<userId>
