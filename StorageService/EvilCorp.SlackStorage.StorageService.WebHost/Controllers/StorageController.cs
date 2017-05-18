@@ -62,7 +62,7 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
             string[] userIdFromDataStore = dataStoreId.Split('_');           
             if (!userIdFromDataStore[0].Equals(userId))
             {
-                return StatusCode(400, "userId does not match userid in datastoreId. Either the userId or datastoreId is incorrect");
+                return StatusCode(404, "userId does not match userid in datastoreId. Either the userId or datastoreId is incorrect");
             }
 
             try
@@ -101,7 +101,7 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
             catch (Exception except)
             {
                 _logger.Log("StorageController:Post {userId} : Error in trying to create a datastore. Message: " + except.Message, LogLevel.Error);
-                return StatusCode(500, except.Message);
+                return StatusCode(400, except.Message);
             }
         }
 
@@ -111,7 +111,7 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
             string[] userIdFromDataStore = dataStoreId.Split('_');
             if (!userIdFromDataStore[0].Equals(userId))
             {
-                return StatusCode(400, "userId does not match userid in datastoreId. Either the userId or datastoreId is incorrect");
+                return StatusCode(404, "userId does not match userid in datastoreId. Either the userId or datastoreId is incorrect");
             }
             try
             {
@@ -132,7 +132,11 @@ namespace EvilCorp.SlackStorage.StorageService.WebHost.Controllers
         {
             try
             {
+                
                 var message = _dataStoreRepo.DeleteAllDataStores(userId);
+                if (message.Equals("0"))
+                    return StatusCode(404, "Pretty sure I want a 404");
+
                 _logger.Log("StorageController:Delete {userId}/{dataStoreId}: deleting all datastores for user" + userId, LogLevel.Trace);
                 var json = JsonConvert.SerializeObject(message);
                 return Ok(JObject.FromObject(new { message }));
